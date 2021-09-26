@@ -1,0 +1,4 @@
+*.zip
+*.emb
+vocabs/
+embeddings/
