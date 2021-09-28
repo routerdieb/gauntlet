@@ -1,0 +1,2 @@
+Optimizer,learning_rate,epoch,loss
+ADAM,0.01,1,237104209.86817932

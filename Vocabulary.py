@@ -60,7 +60,7 @@ class Vocabulary:
         if shuffle:
             np.random.shuffle(self.id2Word)
 
-        for idx in len(self.id2Word):
+        for idx in range(len(self.id2Word)):
             word = self.id2Word[idx]
             self.word2Id.update({word:idx})
 

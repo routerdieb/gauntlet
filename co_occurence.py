@@ -30,9 +30,12 @@ class Co_Occurence_Capturer:
                 
                 context_ids = []
                 for focus_index,focus_word in enumerate(text):
-                    window = text[max(0,focus_index - window_length):focus_index+window_length+1]
+                     left_border_of_window = max(0,focus_index - window_length)
+
+                    window = text[left_border_of_window:focus_index+window_length+1]
                     
-                    left_border_of_window = max(0,focus_index - window_length)
+                                        
+                   
 
                     focus_ids = vocab.get_contrained_ids_text(focus_word,x)
                     for c_index_window, context_word in enumerate(window):
