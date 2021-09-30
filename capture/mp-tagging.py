@@ -7,38 +7,52 @@ from multiprocessing import Process
 import math
 from time import sleep
 
+pathIn = "E:\\data2021\\"
+pathOut = "E:\\data2021processed\\"
+
 def process_file(folder,file):
     nlp = spacy.load("en_core_web_sm")
-    if not os.path.exists("S:\\lem_data\\"+folder):
-        os.makedirs("S:\\lem_data\\"+folder)
-    if not os.path.exists("S:\\pos_data\\"+folder):
-        os.makedirs('S:\\pos_data\\'+folder)
-    if not os.path.exists("S:\\ner_data\\"+folder):
-        os.makedirs('S:\\ner_data\\'+folder)
+
+    if not os.path.exists(pathOut +"lem_data\\"+folder):
+        os.makedirs(pathOut +"lem_data\\"+folder)
+
+    if not os.path.exists(pathOut +"pos_data\\"+folder):
+        os.makedirs(pathOut +"pos_data\\"+folder)
+
+    if not os.path.exists(pathOut +"ner_data\\"+folder):
+        os.makedirs(pathOut +"ner_data\\"+folder)
+
+    if not os.path.exists(pathOut +"tokenised_data\\"+folder):
+        os.makedirs(pathOut +"tokenised_data\\"+folder)
                 
-    path = 'S:\\data\\'+folder+'\\'+file
-    pos_path = 'S:\\pos_data\\'+folder+'\\'+file
-    ner_path = 'S:\\ner_data\\'+folder+'\\'+file
-    lemmatised_path = 'S:\\lem_data\\'+folder+'\\'+file
+    path            = pathIn                      + folder +'\\'+ file
+    pos_path        = pathOut + 'pos_data\\'      + folder +'\\'+ file
+    ner_path        = pathOut + 'ner_data\\'      + folder +'\\'+ file
+    lemmatised_path = pathOut + 'lem_data\\'      + folder +'\\'+ file
+    tokenised_path  = pathOut + 'tokenised_data\\'+ folder +'\\'+ file
         
     with open(path,'r',encoding='utf8') as in_file, open(pos_path,'w',encoding='utf8') as pos_file, \
-    open(ner_path,'w',encoding='utf8') as ner_file, open(lemmatised_path,'w',encoding='utf8') as lem_file:
+    open(ner_path,'w',encoding='utf8') as ner_file, open(lemmatised_path,'w',encoding='utf8') as lem_file, \
+    open(tokenised_path,'w',encoding='utf8') as tok_file:
         in_lines = in_file.readlines()
         for line in in_lines:
             if line.startswith('<doc'):
                 pos_file.write(line)
                 ner_file.write(line)
                 lem_file.write(line)
+                tok_file.write(line)
             elif line.startswith('</doc'):
                 pos_file.write(line)
                 ner_file.write(line)
                 lem_file.write(line)
+                tok_file.write(line)
             else:
                 doc = nlp(line)
                 for token in doc:
                     ner_file.write(token.text + chr(4) + token.ent_type_ + " ")
                     pos_file.write(token.text + chr(4) + token.pos_ + " ")
                     lem_file.write(token.text + chr(4) + token.lemma_ + " ")
+                    tok_file.write(token.text + " ")
             
                 
 def process_dir(path,directorys):
@@ -49,18 +63,18 @@ def process_dir(path,directorys):
     
 if __name__ == '__main__':
     number = 0
-    path = 'S:\data'
+    path = 'E:\data2021'
     dir_list = os.listdir(path)
     
     for i in range(len(dir_list)):
-        if dir_list[i] == 'CM':
-            number = i
+        if dir_list[i] == 'EE':
+           number = i
     
     for i in range(number):
         dir_list.pop(0)
 
     print(dir_list)
-    num_processes = 12
+    num_processes = 16
     iterations = math.ceil(len(dir_list) / num_processes)
     for iteration in range(iterations):
         process_list = []

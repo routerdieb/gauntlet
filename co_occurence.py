@@ -30,21 +30,36 @@ class Co_Occurence_Capturer:
                 
                 context_ids = []
                 for focus_index,focus_word in enumerate(text):
-                     left_border_of_window = max(0,focus_index - window_length)
-
-                    window = text[left_border_of_window:focus_index+window_length+1]
                     
-                                        
-                   
-
                     focus_ids = vocab.get_contrained_ids_text(focus_word,x)
-                    for c_index_window, context_word in enumerate(window):
-                        c_index_text = c_index_window + left_border_of_window
-                        dist = abs(c_index_text - focus_index)#Keine Ahnung ob das so richtig ist
-
+                    
+                    #left words
+                    window_left = []
+                    current_position = focus_index - 1
+                    while(len(window_left) < window_length and current_position >= 0):
+                        word = text[current_position]
+                        if( word in vocab.word2Id):#is not filtered out word
+                            window_left.insert(0,word)
+                        current_position -= 1
+                    for index,context_word in enumerate(window_left):
+                        dist = abs(len(window_left) - index)
                         context_ids = vocab.get_contrained_ids_text(context_word,y)
-                        if (focus_index != c_index_text):
-                            self._assign_entrys(focus_ids,context_ids,dist)                    
+                        self._assign_entrys(focus_ids,context_ids,dist) 
+                        
+                    #rigth words
+                    window_right = []
+                    current_position = focus_index + 1
+                    while(len(window_right) < window_length and current_position < len(text)):
+                        word = text[current_position]
+                        if( word in vocab.word2Id):
+                            window_right.append(word)
+                        current_position += 1
+                    
+                    for index,context_word in enumerate(window_right):
+                        dist = abs(1+ index)
+                        context_ids = vocab.get_contrained_ids_text(context_word,y)
+                        self._assign_entrys(focus_ids,context_ids,dist) 
+                            
         return self.co_occurences
     
     def save_coocurrences(self,file_name):
