@@ -7,10 +7,8 @@ from multiprocessing import Process
 import math
 from time import sleep
 
-pathIn = "E:\\data2021\\"
-pathOut = "E:\\data2021processed\\"
 
-def process_file(folder,file):
+def process_file(pathIn,pathOut,folder,file):
     nlp = spacy.load("en_core_web_sm")
 
     if not os.path.exists(pathOut +"lem_data\\"+folder):
@@ -62,16 +60,19 @@ def process_dir(path,directorys):
             process_file(directory_name,file_name)
     
 if __name__ == '__main__':
-    number = 0
-    path = 'E:\data2021'
+    if len(sys.argv) != 4:
+        raise ValueError('Please provide preprocessed wikipath and filename of vocabulary and number of processes')
+    path = sys.argv[1]
+    pathOut = sys.argv[2]
     dir_list = os.listdir(path)
-    
-    for i in range(len(dir_list)):
-        if dir_list[i] == 'EE':
-           number = i
-    
-    for i in range(number):
-        dir_list.pop(0)
+
+    #In case it is needed to continue at some folder
+    # number = 0
+    #for i in range(len(dir_list)):
+    #    if dir_list[i] == 'EE':
+    #       number = i
+    #for i in range(number):
+    #    dir_list.pop(0)
 
     print(dir_list)
     num_processes = 16
@@ -82,7 +83,7 @@ if __name__ == '__main__':
             offset = num_processes * iteration
             if(offset + process_id < len(dir_list)):
                 print(dir_list[offset + process_id])
-                p = Process(target=process_dir, args=(path,[dir_list[offset + process_id]],))
+                p = Process(target=process_dir, args=(pathIn,pathOut,path,[dir_list[offset + process_id]],))
                 p.start()
                 process_list.append(p)
                 print('started #' + str(process_id))

@@ -7,6 +7,7 @@ sys.path.append("..")
 import multiprocessing
 from multiprocessing import Process, Queue
 from time import sleep
+import time
 
 from Vocabulary import *
 
@@ -57,6 +58,8 @@ if __name__ == '__main__':
         splitted_dirs[dir_index % num_processes].append(dir)
     
     process_list = []
+
+    startTime = time.time()
     for process_id in range(num_processes):
             p = Process(target=process_dirs, args=(path,splitted_dirs[process_id],pqueue))
             p.start()
@@ -81,12 +84,13 @@ if __name__ == '__main__':
 
     global_vocabulary.save('../vocabs/unfiltered' + save_file)
     global_vocabulary.filter_just_symbol_tokens()
-    #print('attention !!! filtering is disabled right now, to find a bug!!')
     global_vocabulary.filter(100)
     global_vocabulary.assignIds()
     print('global_vocabulary_post_filtering')
     print(global_vocabulary.get_size())
     global_vocabulary.save('../vocabs/' + save_file)
 
-    
+    executionTime = (time.time() - startTime)
+    print('Execution time in seconds: ' + str(executionTime))
+
       

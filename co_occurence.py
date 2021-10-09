@@ -32,13 +32,14 @@ class Co_Occurence_Capturer:
                 for focus_index,focus_word in enumerate(text):
                     
                     focus_ids = vocab.get_contrained_ids_text(focus_word,x)
-                    
+                    if focus_ids == []:
+                        continue
                     #left words
                     window_left = []
                     current_position = focus_index - 1
                     while(len(window_left) < window_length and current_position >= 0):
                         word = text[current_position]
-                        if( word in vocab.word2Id):#is not filtered out word
+                        if( vocab.get_contrained_ids_text(word,y) != []):#is not filtered out word
                             window_left.insert(0,word)
                         current_position -= 1
                     for index,context_word in enumerate(window_left):

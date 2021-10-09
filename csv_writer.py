@@ -1,11 +1,11 @@
 import csv
 
 class CSV_writer:
-    def __init__(self,name,appendmode = False):
+    def __init__(self,path,name,appendmode = False):
         if (appendmode):
-            self.csvfile = open('{name}.csv'.format(name=name), 'a', newline='') 
+            self.csvfile = open(path+'\\{name}.csv'.format(name=name), 'a', newline='') 
         else:
-            self.csvfile = open('{name}.csv'.format(name=name), 'w', newline='') 
+            self.csvfile = open(path+'\\{name}.csv'.format(name=name), 'w', newline='') 
         fieldnames = ['Optimizer', 'learning_rate','epoch','loss']
         self.writer = csv.DictWriter(self.csvfile, fieldnames=fieldnames)
         self.writer.writeheader()
