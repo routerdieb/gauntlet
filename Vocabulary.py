@@ -45,12 +45,14 @@ class Vocabulary:
                 self.word_frequency = data['word_frequency']
                 self.areIdsCaculated = False
         
-    
+    def filterWord(self,word):
+        self.word_frequency = {k:v for k,v in self.word_frequency.items() if word != k}
+
     def filter(self,number):
         self.word_frequency = dict(filter(lambda y: y[1] >= number,self.word_frequency.items()))
 
     def filter_just_symbol_tokens(self):
-        self.word_frequency = dict(filter(lambda y: re.match(r'[a-zA-Z0-9]{1,}',y[0]),self.word_frequency.items()))        
+        self.word_frequency = dict(filter(lambda y: re.search(r'[a-zA-Z0-9]{1,}',y[0])!= None,self.word_frequency.items()))        
     
     def assignIds(self,shuffle=True):
         i = 0 
@@ -75,7 +77,12 @@ class Vocabulary:
         
     def get_ids_text(self,word):
         word = word.lower()
-        return self.word2Id[word]
+        try:
+            word_id = self.word2Id[word]
+            return [word_id]
+        except KeyError:
+            pass
+        return []
 
 
     def get_contrained_ids_text(self,word,segment):
@@ -98,66 +105,92 @@ class Vocabulary:
             raise Error
     
 class TaggedVocabulary(Vocabulary):
-    def filter_just_symbol_tokens(self):
-        self.word_frequency = dict(filter(lambda y: re.match(r'[a-zA-Z0-9]{1,}',y[0].split(chr(4))[0]),self.word_frequency.items()))
+    def __init__(self,wordsWithoutTags = False):
+        super(TaggedVocabulary, self).__init__()
+        self.wordsWithoutTags = wordsWithoutTags
 
-    def get_contrained_ids_token(self,token,segment):
+
+    def build_from_text(self,text):
+        for word in text:
+            word = word.lower()
+            if(not self.wordsWithoutTags):
+                try:
+                    self.word_frequency[word]+=1
+                except KeyError:
+                    self.word_frequency[word]=1
+            split = word.split(chr(4))
+
+            if(self.wordsWithoutTags):
+                try:
+                    self.word_frequency[split[0]]+=1
+                except KeyError:
+                    self.word_frequency[split[0]]=1
+
+            if len(split) == 1:
+                continue
+            tag = split[1]
+            if(tag == ''):
+                continue
+            tag = chr(4)+tag
+            try:
+                self.word_frequency[tag]+=1
+            except KeyError:
+                self.word_frequency[tag]=1
+
+
+
+
+    def filter_just_symbol_tokens(self):
+        self.word_frequency = {k:v for k,v in self.word_frequency.items() if k.startswith(chr(4)) or  re.search('[a-zA-Z0-9]', k)!= None }
+
+    def get_contrained_ids_text(self,token,segment):
         token = token.lower()
         eof = chr(4)
         id_list = []
-        #text
+        #text (or tokenised text)
         try:
-            word_id = self.word2Id[token.text]
-            if(segment*self.block_length <= word_id < (segment+1)*self.block_length):
-                id_list.append(word_id)
+            token_id = self.word2Id[token]
+            if(segment*self.block_length <= token_id < (segment+1)*self.block_length):
+                id_list.append(token_id)
         except KeyError:
             pass
         #text + pos
         try:
-            pos_tag = token.get_tag('pos').value
-            if (tag != 'O'):
-                word_id = self.word2Id[token.text+eof+pos_tag]
-                if(segment*self.block_length <= word_id < (segment+1)*self.block_length):
-                    id_list.append(word_id)
+            split = token.split(chr(4))
+            if len(split) == 1:
+                raise KeyError()
+            tag = split[1]
+            if(tag == ''):
+                raise KeyError()
+            tag = chr(4)+tag
+            tag_id = self.word2Id[tag]
+            if(segment*self.block_length <= tag_id < (segment+1)*self.block_length):
+                id_list.append(tag_id)
         except KeyError:
             pass
-        #text + ner
-        try:
-            pos_tag = token.get_tag('ner').value
-            if (tag != 'O'):
-                word_id = self.word2Id[token.text+eof+pos_tag]
-                if(segment*self.block_length <= word_id < (segment+1)*self.block_length):
-                    id_list.append(word_id)
-        except KeyError:
-            pass
-
         return id_list
 
-    def get_ids_token(self,token,segment):
-        #Mother fucker use to lower
+    def get_ids_text(self,token):
         token = token.lower()
         eof = chr(4)
         id_list = []
-        #text
+        #text (or tokenised text)
         try:
-            word_id = self.word2Id[token.text]
-            id_list.append(word_id)
+            token_id = self.word2Id[token]
+            id_list.append(token_id)
         except KeyError:
             pass
         #text + pos
         try:
-            pos_tag = token.get_tag('pos').value
-            if (tag != 'O'):
-                word_id = self.word2Id[token.text+eof+pos_tag]
-                id_list.append(word_id)
-        except KeyError:
-            pass
-        #text + ner
-        try:
-            pos_tag = token.get_tag('ner').value
-            if (tag != 'O'):
-                word_id = self.word2Id[token.text+eof+pos_tag]
-                id_list.append(word_id)
+            split = token.split(chr(4))
+            if len(split) == 1:
+                raise KeyError()
+            tag = split[1]
+            if(tag == ''):
+                raise KeyError()
+            tag = chr(4)+tag
+            tag_id = self.word2Id[tag]
+            id_list.append(tag_id)
         except KeyError:
             pass
         return id_list

@@ -21,8 +21,18 @@ tokenizer = nlp.tokenizer
 process_vocabs = []
 lock = multiprocessing.Lock()
 
-def process_dirs(path,dir_list,queue):
-    vocab = Vocabulary()
+import re
+def preprocess_line(text):
+    text = re.sub(r' \\[^\s]{1,}','',text)
+    text = re.sub(r' /[^\s]{1,}','',text)
+    text = re.sub("[^a-zA-Z\d\s:\u0004]","",text)
+    return text
+
+def process_dirs(path,dir_list,queue,andTags):
+    if (andTags):
+        vocab = TaggedVocabulary()
+    else:
+        vocab = Vocabulary()
     for directory_name in dir_list:
         print(directory_name)
         for file_name in os.listdir(path + "/" + directory_name):
@@ -35,13 +45,14 @@ def process_dirs(path,dir_list,queue):
                     else:
                         #tokens = tokenizer(line)
                         #print(line[0:10])
+                        line = preprocess_line(line)
                         vocab.build_from_text(line.split())
     queue.put(vocab) 
                     
 
 if __name__ == '__main__':
-    if len(sys.argv) != 4:
-        raise ValueError('Please provide preprocessed wikipath and filename of vocabulary and number of processes')
+    if len(sys.argv) < 4:
+        raise ValueError('Please provide preprocessed wikipath and filename of vocabulary and number of processes [--andTags]')
     pqueue = Queue()
     path = sys.argv[1]
     save_file = sys.argv[2]
@@ -50,6 +61,14 @@ if __name__ == '__main__':
     
     num_processes = int(sys.argv[3])
     
+    andTags = False
+    if len(sys.argv) > 4:
+        if (sys.argv[4] == '--andTags'):
+            andTags = True
+        else:
+            raise ValueError('Please provide preprocessed wikipath and filename of vocabulary and number of processes [--andTags]')
+
+
     splitted_dirs = []
     for process in range(num_processes):
         splitted_dirs.append([])
@@ -61,7 +80,7 @@ if __name__ == '__main__':
 
     startTime = time.time()
     for process_id in range(num_processes):
-            p = Process(target=process_dirs, args=(path,splitted_dirs[process_id],pqueue))
+            p = Process(target=process_dirs, args=(path,splitted_dirs[process_id],pqueue,andTags))
             p.start()
             process_list.append(p)
             print('started #' + str(process_id))
@@ -71,8 +90,10 @@ if __name__ == '__main__':
     
     for process in process_list:
         process.join()
-
-    global_vocabulary = Vocabulary()
+    if andTags:
+        global_vocabulary = TaggedVocabulary()
+    else:
+        global_vocabulary = Vocabulary()
     for vocab in process_vocabs:
         print(vocab.get_size())
         for word in vocab.word_frequency:
@@ -83,8 +104,13 @@ if __name__ == '__main__':
     
 
     global_vocabulary.save('../vocabs/unfiltered' + save_file)
+    print(global_vocabulary.get_size())
     global_vocabulary.filter_just_symbol_tokens()
+    print(global_vocabulary.get_size())
     global_vocabulary.filter(100)
+    print(global_vocabulary.get_size())
+    global_vocabulary.filterWord(''+chr(4))
+    print(global_vocabulary.get_size())
     global_vocabulary.assignIds()
     print('global_vocabulary_post_filtering')
     print(global_vocabulary.get_size())
