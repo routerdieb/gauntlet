@@ -12,6 +12,7 @@ from math import *
 from Vocabulary import *
 import cloudpickle
 
+messageParameters = 'Please provide vocab , wiki-path and window_size and number of processes and output folder and [--taggedVocab] [--noDyn] [--writesize XYZ] [--pushevery XY]'
 
 class Co_Occurence_Capturer:
 
@@ -91,7 +92,7 @@ def worker(q_files,q_co_oc,vocab,window_size,output_folder,num_processes,is_dyn_
             capturer = Co_Occurence_Capturer()
             in_lines = in_file.readlines()
             for line in in_lines:
-                if line.startswith('<doc') or '</doc' in line:
+                if line.startswith('<doc') or '</doc' in line[0:50]:
                     pass
                 else:
                     line = preprocess_line(line)
@@ -108,7 +109,7 @@ def save_coocurrences(co_occurence,file_name):
 if __name__ == '__main__':
     print('starting')
     if len(sys.argv) < 6:
-        raise ValueError('Please provide vocab , wiki-path and window_size and number of processes and output folder and [--taggedVocab] [--noDyn]')
+        raise ValueError(messageParameters)
     q_co_oc  = Queue()
     q_files  = Queue()
     path  = sys.argv[2]
@@ -123,22 +124,28 @@ if __name__ == '__main__':
     num_processes = int(sys.argv[4])
     output_folder = sys.argv[5]
 
+    collet_x_before_write = 300
     is_tagged = False
     is_dyn_window = True
-    if len(sys.argv) > 6:
-        if (sys.argv[6] == '--taggedVocab'):
+    i = 6
+    while len(sys.argv) > i:
+        if (sys.argv[i] == '--taggedVocab'):
             is_tagged = True
-        elif(sys.argv[6] == '--noDyn'):
+            print('is_tagged')
+        elif(sys.argv[i] == '--noDyn'):
             is_dyn_window = False
+            print('no dyn')
+        elif(sys.argv[i] == '--writesize'):
+            collet_x_before_write = sys.argv[i+1]
+            i+=2
+            continue
+        elif(sys.argv[i] == '--pushevery'):
+            push_every_x = sys.argv[i+1]
+            i+=2
+            continue
         else:
-            raise ValueError('Please provide vocab , wiki-path and window_size and number of processes and output folder and [--taggedVocab] [--noDyn]')
-    if len(sys.argv) > 7:
-        if (sys.argv[7] == '--taggedVocab'):
-            is_tagged = True
-        elif(sys.argv[7] == '--noDyn'):
-            is_dyn_window = False
-        else:
-            raise ValueError('Please provide vocab , wiki-path and window_size and number of processes and output folder and [--taggedVocab] [--noDyn]')
+            raise ValueError(messageParameters)
+        i += 1
 
 
     if is_tagged:
@@ -149,9 +156,9 @@ if __name__ == '__main__':
 
     dir_list = os.listdir(path)
     for directory_name in dir_list:
-        file_list = os.listdir(path + '\\' + directory_name)
+        file_list = os.listdir(path + '/' + directory_name)
         for file_name in file_list:
-            q_files.put(path + '\\'+directory_name+'\\'+file_name)
+            q_files.put(path + '/'+directory_name+'/'+file_name)
 
     for i in range(num_processes):
         q_files.put('done')
@@ -166,7 +173,7 @@ if __name__ == '__main__':
     filename = 'co-oc-dict-'
     
     index = 0
-    write_every = int(300 / push_every_x)
+    write_every = int(collet_x_before_write / push_every_x)
     finished_processes = 0
     file_index = 0
 
@@ -174,6 +181,7 @@ if __name__ == '__main__':
 
     while finished_processes < num_processes:
         print(q_co_oc.qsize(),index % write_every,write_every - 1)
+        print('files left:'+ q_files.qsize())
 
         awnser = q_co_oc.get()
         if (awnser == 'done'):
@@ -187,8 +195,8 @@ if __name__ == '__main__':
                     co_occurence[token] = tmp_co_occurence[token]
 
         if index % write_every == write_every - 1 or finished_processes == num_processes:
-            save_coocurrences(co_occurence,output_folder + '\\' + 'co-oc-dict-' + str(file_index))
             print('writing')
+            save_coocurrences(co_occurence,output_folder + '/' + 'co-oc-dict-' + str(file_index))
             co_occurence = {}
             file_index += 1
 

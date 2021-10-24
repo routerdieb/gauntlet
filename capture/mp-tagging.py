@@ -11,23 +11,23 @@ from time import sleep
 def process_file(pathIn,pathOut,folder,file):
     nlp = spacy.load("en_core_web_sm")
 
-    if not os.path.exists(pathOut +"lem_data\\"+folder):
-        os.makedirs(pathOut +"lem_data\\"+folder)
+    if not os.path.exists(pathOut +"lem_data/"+folder):
+        os.makedirs(pathOut +"lem_data/"+folder)
 
-    if not os.path.exists(pathOut +"pos_data\\"+folder):
-        os.makedirs(pathOut +"pos_data\\"+folder)
+    if not os.path.exists(pathOut +"pos_data/"+folder):
+        os.makedirs(pathOut +"pos_data/"+folder)
 
-    if not os.path.exists(pathOut +"ner_data\\"+folder):
-        os.makedirs(pathOut +"ner_data\\"+folder)
+    if not os.path.exists(pathOut +"ner_data/"+folder):
+        os.makedirs(pathOut +"ner_data/"+folder)
 
-    if not os.path.exists(pathOut +"tokenised_data\\"+folder):
-        os.makedirs(pathOut +"tokenised_data\\"+folder)
+    if not os.path.exists(pathOut +"tokenised_data/"+folder):
+        os.makedirs(pathOut +"tokenised_data/"+folder)
                 
-    path            = pathIn                      + folder +'\\'+ file
-    pos_path        = pathOut + 'pos_data\\'      + folder +'\\'+ file
-    ner_path        = pathOut + 'ner_data\\'      + folder +'\\'+ file
-    lemmatised_path = pathOut + 'lem_data\\'      + folder +'\\'+ file
-    tokenised_path  = pathOut + 'tokenised_data\\'+ folder +'\\'+ file
+    path            = pathIn                      + folder +'/'+ file
+    pos_path        = pathOut + 'pos_data/'      + folder +'/'+ file
+    ner_path        = pathOut + 'ner_data/'      + folder +'/'+ file
+    lemmatised_path = pathOut + 'lem_data/'      + folder +'/'+ file
+    tokenised_path  = pathOut + 'tokenised_data/'+ folder +'/'+ file
         
     with open(path,'r',encoding='utf8') as in_file, open(pos_path,'w',encoding='utf8') as pos_file, \
     open(ner_path,'w',encoding='utf8') as ner_file, open(lemmatised_path,'w',encoding='utf8') as lem_file, \
