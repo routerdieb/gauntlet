@@ -23,9 +23,10 @@ lock = multiprocessing.Lock()
 
 import re
 def preprocess_line(text):
-    text = re.sub(r' \\[^\s]{1,}','',text)
-    text = re.sub(r' /[^\s]{1,}','',text)
-    text = re.sub("[^a-zA-Z\d\s:\u0004]","",text)
+    #text = re.sub(r' \\[^\s]{1,}','',text)
+    #text = re.sub(r' /[^\s]{1,}','',text)
+    #text = re.sub("\s?[^a-zA-Z\d\s:\u0004]","",text)
+    text = re.sub(r'[\'\".,?!]',"",text)
     return text
 
 def process_dirs(path,dir_list,queue,andTags):
@@ -36,7 +37,7 @@ def process_dirs(path,dir_list,queue,andTags):
     for directory_name in dir_list:
         print(directory_name)
         for file_name in os.listdir(path + "/" + directory_name):
-            file_path = path+'\\'+directory_name+'\\'+file_name
+            file_path = os.path.join(path, directory_name,file_name)
             with open(file_path,'r',encoding='utf8') as in_file:
                 in_lines = in_file.readlines()
                 for line in in_lines:
