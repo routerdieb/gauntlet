@@ -72,7 +72,7 @@ def preprocess_line(text):
     return text
 
 
-push_every_x = 10
+push_every_x = 15
 def worker(q_files,q_co_oc,vocab,window_size,output_folder,num_processes,is_dyn_window):
     index = 0
     while True:
@@ -166,7 +166,7 @@ if __name__ == '__main__':
     filename = 'co-oc-dict-'
     
     index = 0
-    write_every = int(160 / push_every_x)
+    write_every = int(300 / push_every_x)
     finished_processes = 0
     file_index = 0
 
