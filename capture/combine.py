@@ -80,7 +80,7 @@ if __name__ == '__main__':
     pathOut = sys.argv[2]
 
     is_symetrical = True
-    if(len(sys.argv)==4 and sys.argv[4] == '--asymetrical'):
+    if(len(sys.argv)==5 and sys.argv[4] == '--asymetrical'):
         is_asymetrical = False
     else:
         raise ValueError(messageParameters)
