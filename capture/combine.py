@@ -82,7 +82,7 @@ if __name__ == '__main__':
     is_symetrical = True
     if len(sys.argv)==5:
         if sys.argv[4] == '--asymetrical':
-            is_asymetrical = False
+            is_symetrical = False
         else:
             raise ValueError(messageParameters)
 
@@ -91,5 +91,5 @@ if __name__ == '__main__':
     else:
         raise Exception('the block folder should be empty  ')
 
-    combineAndSeperate(pathIn,pathOut,vocab,symmetrie=is_asymetrical)
+    combineAndSeperate(pathIn,pathOut,vocab,symmetrie=is_symetrical)
     
