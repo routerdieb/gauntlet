@@ -72,12 +72,12 @@ if __name__ == '__main__':
     print('starting')
     if len(sys.argv) < 4:
         raise ValueError(messageParameters)
-    vocab_path = sys.argv[4]
+    vocab_path = sys.argv[3]
     print(vocab_path)
     vocab = Vocabulary()
     vocab.load(vocab_path)
-    pathIn = sys.argv[2]
-    pathOut = sys.argv[3]
+    pathIn = sys.argv[1]
+    pathOut = sys.argv[2]
 
     is_symetrical = True
     if(sys.argv[5] == '--asymetrical'):
