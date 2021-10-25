@@ -80,8 +80,10 @@ if __name__ == '__main__':
     pathOut = sys.argv[2]
 
     is_symetrical = True
-    if(sys.argv[5] == '--asymetrical'):
+    if(if len(sys.argv)=4 and sys.argv[4] == '--asymetrical'):
         is_asymetrical = False
+    else:
+        raise ValueError(messageParameters)
 
     if not os.listdir(pathOut):
         print("path out is empty")
