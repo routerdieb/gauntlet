@@ -26,7 +26,7 @@ def save_dict(path,dictionary,i,j):
             
 
 
-messageParameters = 'provide vocab-path, pathIn and pathOut [--asymetrical]'
+messageParameters = 'provide pathIn pathOut and vocab-path [--asymetrical]'
 
 def combineAndSeperate(pathIn,pathOut,vocab,symmetrie=True):
     block_size = 20000 # must be int
@@ -72,11 +72,12 @@ if __name__ == '__main__':
     print('starting')
     if len(sys.argv) < 4:
         raise ValueError(messageParameters)
-    vocab_path = sys.argv[2]
+    vocab_path = sys.argv[4]
+    print(vocab_path)
     vocab = Vocabulary()
     vocab.load(vocab_path)
-    pathIn = sys.argv[3]
-    pathOut = sys.argv[4]
+    pathIn = sys.argv[2]
+    pathOut = sys.argv[3]
 
     is_symetrical = True
     if(sys.argv[5] == '--asymetrical'):
