@@ -137,11 +137,11 @@ if __name__ == '__main__':
             is_dyn_window = False
             print('no dyn')
         elif(sys.argv[i] == '--writesize'):
-            collet_x_before_write = sys.argv[i+1]
+            collet_x_before_write = int(sys.argv[i+1])
             i+=2
             continue
         elif(sys.argv[i] == '--pushevery'):
-            push_every_x = sys.argv[i+1]
+            push_every_x = int(sys.argv[i+1])
             i+=2
             continue
         else:

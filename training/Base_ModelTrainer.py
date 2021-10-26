@@ -23,6 +23,7 @@ class Base_ModelTrainer:
         self.block_path = block_path
         self.vocab_length = vocab_length
         self.optimizer = None
+        self.ones_symetrical = tf.ones((self.block_length,self.block_length), dtype=tf.dtypes.float32, name=None)
     
     def prepare(self,basepath,experiment_name):
         self.basepath = basepath
@@ -115,7 +116,6 @@ class Base_ModelTrainer:
         
         return  self.block_path + '\\' + template
         
-    
     file_que = queue.Queue()
     
     
@@ -165,16 +165,18 @@ class Base_ModelTrainer:
         #co_occurences = tf.clip_by_value(co_occurences, clip_value_min = 0.0, clip_value_max=5000.0)
         bias_terms = bias_mat + con_bias_mat
         weight_matrix = tf.matmul(context_weights,weights)
-        log_X = tf.math.log(co_occurences + 1)
+        log_X = tf.math.log(co_occurences + self.ones_symetrical)
         summe = bias_terms + weight_matrix - log_X
         summe = tf.math.square(summe)
-        summe = self.scale_fn(co_occurences) * summe
+        summe = self.scale_fn(co_occurences) * summe#elemen wise
         reduced = tf.math.reduce_sum(summe)
         return reduced
 
+    
+    
+
     def loss(self,zeile,spalte,weights,context_weights,bias,con_bias,co_occurences):
         
-        ones_symetrical = tf.ones((self.block_length,self.block_length), dtype=tf.dtypes.float32, name=None)
         #print(weights.shape)
         #print(context_weights.shape)
         #print(bias.shape)
@@ -187,10 +189,10 @@ class Base_ModelTrainer:
             add2_context_weights = tf.zeros((difference,self.vector_size),dtype=tf.dtypes.float32)
             
             con_weights       = tf.concat([context_weights,add2_context_weights],axis = 0)
-            con_bias_mat   = tf.concat([con_bias,add2_context_bias],axis = 0) * ones_symetrical
+            con_bias   = tf.concat([con_bias,add2_context_bias],axis = 0)
         else:
             con_weights       = context_weights
-            con_bias_mat   = con_bias * ones_symetrical
+        con_bias_mat   = tf.breodcast_to(con_bias,(self.block_length,self.block_length))
         
         co_occurences = self.tf_co_occurences
         #just the words without context
@@ -200,10 +202,10 @@ class Base_ModelTrainer:
             add2_weights = tf.zeros((self.vector_size,difference),dtype=tf.dtypes.float32)
             
             weights = tf.concat([weights,add2_weights],axis = 1)
-            bias_mat = tf.concat([bias,add2_bias],axis=1) * ones_symetrical
+            bias = tf.concat([bias,add2_bias],axis=1)
         else:
             weights     = weights
-            bias_mat = bias * ones_symetrical
+        bias_mat = tf.broadcast_to(bias,(self.block_length,self.block_length))
           
         return self._inner_loss(weights,con_weights,bias_mat,con_bias_mat,co_occurences)
     
