@@ -10,13 +10,14 @@ import h5py
 import numpy as np
 import os
 import sys
+from multiprocessing import Process, Queue
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 import tensorflow as tf
 
 # It is recommeded to have blocks diviside by 16. E.g. 4000x4000 => --splitLengthBy 5.
 # The default blocks have size of 20000, the blocks must be divisible by splitlength 
-messageParameters = 'Please provide path_in path_out [--splitLengthBy X]'
+messageParameters = 'Please provide path_in path_out [--splitLengthBy X] [--processes XY]'
 
 def load_dict(path,zeilen,spalten):
     if(zeilen >= spalten):
@@ -66,32 +67,18 @@ def load_co_occurence(path,zeilen,spalten):
         coocurrence = coocurrence + tril(coocurrence,k=-1).transpose()
     return coocurrence
 
-
-if __name__ == '__main__':
-    if (len(sys.argv) < 3):
-        raise ValueError(messageParameters)
-    print('starting dict2HDF')
-    input_folder = sys.argv[1]
-    output_folder = sys.argv[2]
-
-    split_length = 4 #2,4,5,10 A value of 5 is recommeded => CUDA Cores
-    if (len(sys.argv) > 3):
-        if(sys.argv[3] == '--splitLengthBy'):
-            split_length = int(sys.argv[4])
-        else:
-            raise ValueError(messageParameters)
-    
-    if(20000 % split_length != 0):
-        raise ValueError('block not devisible by splitlengthby')
-    size = int(20000/split_length)
-
+def process_block(q_files,input_folder,output_folder,size):
     regex = r'blockcounts_([0-9]{1,})_([0-9]{1,})'
-
-    for file_name in os.listdir(input_folder):
-        match = re.search(regex, file_name)
-        i,j   = match.group(1), match.group(2)
-        i,j   = int(i)        , int(j)
-        print('output for progress ' + str(i)+','+str(j))
+    while True: 
+        task = q_files.get()
+        if task == 'done':
+            break
+        else:
+            file_name = task
+            match = re.search(regex, file_name)
+            i,j   = match.group(1), match.group(2)
+            i,j   = int(i)        , int(j)
+            print('output for progress ' + str(i)+','+str(j) + ':'+q_files.qsize())
 
         co_occurence = load_co_occurence(input_folder,i,j)
         if(i == j):
@@ -100,7 +87,7 @@ if __name__ == '__main__':
         for sub_i in range(split_length):
             for sub_j in range(split_length):
                 a,b = i*split_length+sub_i , j*split_length+sub_j
-                print(a,b)
+                #print(a,b)
                 filename = 'tf_cooccurence_{a}_{b}.hdf'.format(a = a,b = b)
             
                 f = h5py.File( output_folder +filename, "w")#plus experiment name
@@ -108,4 +95,52 @@ if __name__ == '__main__':
                 part = co_occurence[sub_i*size:(sub_i+1)*size,sub_j*size:(sub_j+1)*size]
                 co_occurence_hdf[:,:] = part
                 f.close()
+
+if __name__ == '__main__':
+    if (len(sys.argv) < 3):
+        raise ValueError(messageParameters)
+    print('starting dict2HDF')
+    input_folder = sys.argv[1]
+    output_folder = sys.argv[2]
+    num_processes = 4
+
+    split_length = 4 #2,4,5,10 A value of 5 is recommeded => CUDA Cores
+    i = 3
+    while (len(sys.argv) > i):
+        if(sys.argv[i] == '--splitLengthBy'):
+            split_length = int(sys.argv[i+1])
+            i += 2
+            continue
+        elif (sys.argv[i] == '--processes'):
+            num_processes = int(sys.argv[i+1])
+            i += 2
+            continue
+        else:
+            raise ValueError(messageParameters)
+    
+    if(20000 % split_length != 0):
+        raise ValueError('block not devisible by splitlengthby')
+    size = int(20000/split_length)
+
+    q_files  = Queue()
+    for file_name in os.listdir(input_folder):
+        q_files.put(file_name)
+    
+    for process in range(num_processes):
+        q_files.put('done')
+
+    process_list = []
+
+    for process_id in range(num_processes):
+            p = Process(target=process_block, args=(q_files,input_folder,output_folder,size))
+            p.start()
+            process_list.append(p)
+            print('started #' + str(process_id))
+    
+    print('last phase')
+    for process in process_list:
+        process.join()
+
+
+    
             
