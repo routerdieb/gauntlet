@@ -85,7 +85,7 @@ if __name__ == '__main__':
         raise ValueError('block not devisible by splitlengthby')
     size = int(20000/split_length)
 
-    regex = r'blockcounts_([0-9]{1,})_([0-9]{1,})'
+    regex = r'\blockcounts_([0-9]{1,})_([0-9]{1,})'
 
     for file_name in os.listdir(input_folder):
         match = re.match(regex, file_name)
