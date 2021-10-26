@@ -127,6 +127,7 @@ if __name__ == '__main__':
     collet_x_before_write = 300
     is_tagged = False
     is_dyn_window = True
+
     i = 6
     while len(sys.argv) > i:
         if (sys.argv[i] == '--taggedVocab'):
@@ -146,7 +147,6 @@ if __name__ == '__main__':
         else:
             raise ValueError(messageParameters)
         i += 1
-
 
     if is_tagged:
         vocab = TaggedVocabulary()

@@ -8,5 +8,4 @@ class Diag_Model(Base_ModelTrainer):
             template = "tf_cooccurence_{i}_{j}.hdf".format(i=zeile,j=spalte)
         elif(spalte > zeile):
             template = "tf_cooccurence_{i}_{j}.hdf".format(i=spalte,j=zeile)
-        
-        return  self.block_path + '\\' + template
+        return  self.block_path + '\\' + template        

@@ -1,3 +1,18 @@
+import cloudpickle
+import os
+import sys
+sys.path.append('../')
+import h5py
+from Vocabulary import *
+from csv_writer import *
+import tensorflow as tf
+import numpy as np
+import random
+import math
+import threading
+import time
+from threading import queue
+
 class Base_ModelTrainer:
     def __init__(self,vocab_length,block_path,vector_size = 100):
         self.vector_size = vector_size
@@ -8,7 +23,6 @@ class Base_ModelTrainer:
         self.block_path = block_path
         self.vocab_length = vocab_length
         self.optimizer = None
-    
     
     def prepare(self,basepath,experiment_name):
         self.basepath = basepath
@@ -49,8 +63,8 @@ class Base_ModelTrainer:
         self.experiment_name = experiment_name
         self.f = h5py.File(basepath + '//{filename}.hdf5'.format(filename=experiment_name), "w")
         
-        load_weights()
-        load_optimizer()
+        self.load_weights()
+        self.load_optimizer()
         self.csv_writer = CSV_writer(basepath,experiment_name+".csv",appendmode = True)
 
     def load_weights(self):
@@ -79,11 +93,11 @@ class Base_ModelTrainer:
             self.bias[:,iter * self.block_length:(iter+1)*self.block_length] = self.tf_bias[iter].numpy()
             self.con_weights[iter * self.block_length:(iter+1)*self.block_length,:] = self.tf_con_weights[iter].numpy()
            
-    def save_optimizer(file_path):
+    def save_optimizer(self,file_path):
         with open(file_path, 'wb') as file:
             cloudpickle.dump(self.optimizer, file)
 
-    def load_optimizer(file_path):
+    def load_optimizer(self,file_path):
         with open(file_path, 'rb+') as file:
             self.optimizer = cloudpickle.load(file)
 
