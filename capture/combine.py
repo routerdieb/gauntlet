@@ -11,7 +11,7 @@ import sys
 import cloudpickle
 sys.path.append("..//")
 
-from Vocabulary import *
+from Vocabulary import Vocabulary
 
 def load_co_occurence(name):
         with open(name, 'rb+') as file:
@@ -24,20 +24,11 @@ def save_dict(path,dictionary,i,j):
         for k, v in dictionary.items():
             file.write("{k}:{v} \n".format(k=k,v=v))
             
-pathIn = 'E:\\tmp\\base_dicts_nodyn'
-pathOut = 'E:\\tmp\\coocurrence_blocks_nodyn'
-
-vocab = Vocabulary()
-vocab.load('../vocabs/c_base')
-size = vocab.get_size()
 
 
-if not os.listdir(pathOut):
-    print("path out is empty")
-else:
-     raise Exception('the block folder should be empty  ')
+messageParameters = 'provide pathIn pathOut and vocab-path [--asymetrical]'
 
-def combineAndSeperate(symmetrie=True):
+def combineAndSeperate(pathIn,pathOut,vocab,symmetrie=True):
     block_size = 20000 # must be int
     blocks_amount = math.ceil(vocab.get_size()/float(block_size))
 
@@ -76,5 +67,29 @@ def combineAndSeperate(symmetrie=True):
                 print(len(dict_of_dicts[(i,j)]))
                 save_dict(pathOut,dict_of_dicts[(i,j)],i,j)
                 dict_of_dicts[(i,j)].clear()
-            
-combineAndSeperate()
+
+if __name__ == '__main__':
+    print('starting')
+    if len(sys.argv) < 4:
+        raise ValueError(messageParameters)
+    vocab_path = sys.argv[3]
+    print(vocab_path)
+    vocab = Vocabulary()
+    vocab.load(vocab_path)
+    pathIn = sys.argv[1]
+    pathOut = sys.argv[2]
+
+    is_symetrical = True
+    if len(sys.argv)==5:
+        if sys.argv[4] == '--asymetrical':
+            is_symetrical = False
+        else:
+            raise ValueError(messageParameters)
+
+    if not os.listdir(pathOut):
+        print("path out is empty")
+    else:
+        raise Exception('the block folder should be empty  ')
+
+    combineAndSeperate(pathIn,pathOut,vocab,symmetrie=is_symetrical)
+    

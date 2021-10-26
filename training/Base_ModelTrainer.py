@@ -200,7 +200,7 @@ class Base_ModelTrainer:
         clipped = tf.clip_by_value(value, clip_value_min = 0.0, clip_value_max=100.0)
         return tf.pow(clipped / self.XMAX, self.alpha)
     
-    def train_splitted(self,epochs,use_grad_clipping = False):
+    def train_splitted(self,epochs,use_grad_clipping = False,mixedPrecision = False):
         
         if (self.optimizer == None and use_grad_clipping):
             self.optimizer = tf.keras.optimizers.Adagrad(learning_rate=0.01,clipvalue=100.0)
@@ -208,6 +208,8 @@ class Base_ModelTrainer:
         elif(self.optimizer == None):
             self.optimizer = tf.keras.optimizers.Adagrad(learning_rate=0.03)
             self.load_weights()
+        if(mixedPrecision):
+            self.optimizer = tf.train.experimental.enable_mixed_precision_graph_rewrite(self.optimizer)
             
         for epoch in range(epochs):
             cur_loss = 0.0
