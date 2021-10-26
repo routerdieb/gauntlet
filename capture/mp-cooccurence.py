@@ -181,7 +181,7 @@ if __name__ == '__main__':
 
     while finished_processes < num_processes:
         print(q_co_oc.qsize(),index % write_every,write_every - 1)
-        print('files left:'+ q_files.qsize())
+        print('files left:'+ str(q_files.qsize()))
 
         awnser = q_co_oc.get()
         if (awnser == 'done'):
