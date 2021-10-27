@@ -69,7 +69,7 @@ def process_block(q_files,input_folder,output_folder,size):
             match = re.search(regex, file_name)
             i,j   = match.group(1), match.group(2)
             i,j   = int(i)        , int(j)
-            print('output for progress ' + str(i)+','+str(j) + ':'+q_files.qsize())
+            print('output for progress ' + str(i)+','+str(j) + ':'+str(q_files.qsize()))
 
         co_occurence = load_co_occurence(input_folder,i,j)
         if(i == j):
