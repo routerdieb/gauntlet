@@ -12,15 +12,15 @@ class AllMemoryTrainer(Base_ModelTrainer):
             for j in range(self.amount_split):
                 if symmetrie and j > i:
                     continue
-                self.blocks[(i,j)] = self._inital_load(i,j)
+                self.blocks[(i,j)] = super()._inital_load(self,i,j)
 
     #conversion, pushes this already to gpu storage.
 
-    def load_block(self,zeile,spalte):
+    def load(self,id, zeile, spalte):
         coocurrence = self.blocks[(zeile,spalte)]
         if (spalte > zeile):
             coocurrence = np.transpose(coocurrence)
-        self.tf_co_occurences = tf.convert_to_tensor(coocurrence,dtype=tf.dtypes.float32)
+        super().tf_co_occurences = tf.convert_to_tensor(coocurrence,dtype=tf.dtypes.float32)
 
     def _inital_load(self,zeile,spalte):
         file_path =  self.block_file_path(zeile,spalte)

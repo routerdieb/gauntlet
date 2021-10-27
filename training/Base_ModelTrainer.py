@@ -173,8 +173,15 @@ class Base_ModelTrainer:
         reduced = tf.math.reduce_sum(summe)
         return reduced
 
-    
-    
+    def load(self,id, zeile, spalte):
+        if(id == 0):
+            self.load_block(zeile,spalte)
+            self.load_block_async(block_list[id+1][0],block_list[id+1][1])
+        else:
+            self.get_block_async()
+            if(id < len(block_list) - 1):#if not last id
+                next = block_list[id+1]
+                self.load_block_async(next[0],next[1])
 
     def loss(self,zeile,spalte,weights,context_weights,bias,con_bias,co_occurences):
         
@@ -193,7 +200,7 @@ class Base_ModelTrainer:
             con_bias   = tf.concat([con_bias,add2_context_bias],axis = 0)
         else:
             con_weights       = context_weights
-        con_bias_mat   = tf.breodcast_to(con_bias,(self.block_length,self.block_length))
+        con_bias_mat   = tf.broadcast_to(con_bias,(self.block_length,self.block_length))
         
         co_occurences = self.tf_co_occurences
         #just the words without context
@@ -217,6 +224,10 @@ class Base_ModelTrainer:
         clipped = tf.clip_by_value(value, clip_value_min = 0.0, clip_value_max=100.0)
         return tf.pow(clipped / self.XMAX, self.alpha)
     
+
+
+
+
     def train_splitted(self,epochs,use_grad_clipping = False,mixedPrecision = False):
         
         if (self.optimizer == None and use_grad_clipping):
@@ -238,14 +249,8 @@ class Base_ModelTrainer:
         
             enumerated = enumerate(block_list)
             for id,(zeile,spalte) in enumerated:
-                if(id == 0):
-                    self.load_block(zeile,spalte)
-                    self.load_block_async(block_list[id+1][0],block_list[id+1][1])
-                else:
-                    self.get_block_async()
-                    if(id < len(block_list) - 1):#if not last id
-                        next = block_list[id+1]
-                        self.load_block_async(next[0],next[1])
+                load(id,zeile,spalte)
+                
                 #self.load_block(zeile,spalte)
                 #print(zeile,spalte)
 
