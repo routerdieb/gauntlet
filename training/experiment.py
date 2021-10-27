@@ -14,7 +14,6 @@ import csv
 from csv_writer import *
 import random
 
-import threading, queue
 from AllMemory import *
 
 def save_wc_emb(vocab,epochs):
