@@ -249,7 +249,7 @@ class Base_ModelTrainer:
         
             enumerated = enumerate(block_list)
             for id,(zeile,spalte) in enumerated:
-                load(id,zeile,spalte)
+                self.load(id,zeile,spalte)
                 
                 #self.load_block(zeile,spalte)
                 #print(zeile,spalte)
