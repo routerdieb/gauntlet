@@ -11,6 +11,7 @@ import random
 import math
 import threading
 import time
+from tensorflow.keras import mixed_precision
 import threading, queue
 
 class Base_ModelTrainer:
@@ -159,8 +160,6 @@ class Base_ModelTrainer:
         self.file_que.put(tf_co_occurences)
         tf_co_occurences = None
         
-        
-    
    
     def _inner_loss(self,weights,context_weights,bias_mat,con_bias_mat,co_occurences):
         #co_occurences = tf.clip_by_value(co_occurences, clip_value_min = 0.0, clip_value_max=5000.0)
@@ -229,6 +228,7 @@ class Base_ModelTrainer:
 
 
     def train_splitted(self,epochs,use_grad_clipping = False,mixedPrecision = False):
+
         
         if (self.optimizer == None and use_grad_clipping):
             self.optimizer = tf.keras.optimizers.Adagrad(learning_rate=0.01,clipvalue=100.0)
@@ -237,7 +237,8 @@ class Base_ModelTrainer:
             self.optimizer = tf.keras.optimizers.Adagrad(learning_rate=0.03)
             self.init_weights()
         if(mixedPrecision):
-            self.optimizer = tf.train.experimental.enable_mixed_precision_graph_rewrite(self.optimizer)
+            policy = mixed_precision.Policy('mixed_float16')
+            mixed_precision.set_global_policy(policy)
             
         for epoch in range(epochs):
             cur_loss = 0.0
