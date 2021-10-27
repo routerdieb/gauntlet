@@ -221,10 +221,10 @@ class Base_ModelTrainer:
         
         if (self.optimizer == None and use_grad_clipping):
             self.optimizer = tf.keras.optimizers.Adagrad(learning_rate=0.01,clipvalue=100.0)
-            self.load_weights()
+            self.init_weights()
         elif(self.optimizer == None):
             self.optimizer = tf.keras.optimizers.Adagrad(learning_rate=0.03)
-            self.load_weights()
+            self.init_weights()
         if(mixedPrecision):
             self.optimizer = tf.train.experimental.enable_mixed_precision_graph_rewrite(self.optimizer)
             
