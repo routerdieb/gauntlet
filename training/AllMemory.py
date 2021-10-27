@@ -12,7 +12,7 @@ class AllMemoryTrainer(Base_ModelTrainer):
             for j in range(self.amount_split):
                 if symmetrie and j > i:
                     continue
-                self.blocks[(i,j)] = super()._inital_load(self,i,j)
+                self.blocks[(i,j)] = self._inital_load(self,i,j)
 
     #conversion, pushes this already to gpu storage.
 
