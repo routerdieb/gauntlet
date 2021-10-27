@@ -21,7 +21,7 @@ class AllMemoryTrainer(Base_ModelTrainer):
         coocurrence = self.blocks[(zeile,spalte)]
         if (spalte > zeile):
             coocurrence = np.transpose(coocurrence)
-        super().tf_co_occurences = tf.convert_to_tensor(coocurrence,dtype=tf.dtypes.float32)
+        self.tf_co_occurences = tf.convert_to_tensor(coocurrence,dtype=tf.dtypes.float32)
 
     def _inital_load(self,zeile,spalte):
         file_path =  self.block_file_path(zeile,spalte)
