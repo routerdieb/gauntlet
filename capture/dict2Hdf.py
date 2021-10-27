@@ -72,6 +72,7 @@ def process_block(q_files,input_folder,output_folder,size):
             print('output for progress ' + str(i)+','+str(j) + ':'+str(q_files.qsize()))
 
         co_occurence = load_co_occurence(input_folder,i,j)
+        co_occurence = co_occurence.toarray()
         if(i == j):
             np.fill_diagonal(co_occurence,0)
     
