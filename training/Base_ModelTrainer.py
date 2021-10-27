@@ -40,10 +40,10 @@ class Base_ModelTrainer:
         self._init_matrices()
 
     def _init_matrices(self,chunk_size=10000):
-        self.init_hdf_matrix(self.weights,-0.5,0.5,chunk_size)
-        self.init_hdf_matrix(self.con_weights,-0.5,0.5,chunk_size)
-        self.init_hdf_matrix(self.context_bias,-0.5,0.5,chunk_size)
-        self.init_hdf_matrix(self.bias,-0.5,0.5,chunk_size)
+        self._init_hdf_matrix(self.weights,-0.5,0.5,chunk_size)
+        self._init_hdf_matrix(self.con_weights,-0.5,0.5,chunk_size)
+        self._init_hdf_matrix(self.context_bias,-0.5,0.5,chunk_size)
+        self._init_hdf_matrix(self.bias,-0.5,0.5,chunk_size)
 
 
     def _init_hdf_matrix(self,hdf_data,min_value,max_value,block_length):
