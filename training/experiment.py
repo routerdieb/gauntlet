@@ -54,7 +54,7 @@ parameterMessage = 'Please provide vocab,hdf-path,output-path and experiment nam
 if __name__ == '__main__':
     print('starting')
     if len(sys.argv) < 1+5:
-        raise ValueError(messageParameters)
+        raise ValueError(parameterMessage)
 
     vocab = Vocabulary()
     vocab.load(sys.argv[1])
