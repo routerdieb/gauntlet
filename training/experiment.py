@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
     startTime = time.time()
 
-    trainer.train_splitted(epochs)
+    trainer.train_splitted(epochs,mixedPrecision=True)
 
     executionTime = (time.time() - startTime)
     print('Execution time in seconds: ' + str(executionTime))
