@@ -16,7 +16,7 @@ import random
 
 from AllMemory import *
 
-def save_wc_emb(vocab,epochs):
+def save_wc_emb(vocab,epochs,experiment_name):
     weights = trainer.f.get('weights')
     weights = weights[:]
     context_weights = trainer.f.get('context-weights')
@@ -32,7 +32,7 @@ def save_wc_emb(vocab,epochs):
                 file.write(' '+str(coord))
             file.write('\n')
 
-def save_w_emb(vocab,epochs):
+def save_w_emb(vocab,epochs,experiment_name):
     weights = trainer.f.get('weights')
     weights = weights[:]
     context_weights = trainer.f.get('context-weights')
@@ -74,6 +74,8 @@ if __name__ == '__main__':
 
     trainer.train_splitted(epochs)
 
+    save_wc_emb(vocab,epochs,experiment_name)
+    save_w_emb(vocab,epochs,experiment_name)
     executionTime = (time.time() - startTime)
     print('Execution time in seconds: ' + str(executionTime))
 
