@@ -11,9 +11,6 @@ import numpy as np
 import os
 import sys
 from multiprocessing import Process, Queue
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-import tensorflow as tf
 
 # It is recommeded to have blocks diviside by 16. E.g. 4000x4000 => --splitLengthBy 5.
 # The default blocks have size of 20000, the blocks must be divisible by splitlength 
@@ -50,12 +47,6 @@ def load_co_occurence(path,zeilen,spalten):
     coocurrence = dok_matrix((20000,20000),dtype='d')
     
     coocurrence._update(co_occurences_dict)
-    
-    coocurrence  = coocurrence.toarray()
-    zero = tf.constant(0, dtype=tf.float32)
-    where = tf.not_equal(coocurrence, zero)
-    indices = tf.where(where)
-    print(indices.shape[0])
     
     if spalten > zeilen :
         raise Exception("You sha'll not get symmetrical context")
