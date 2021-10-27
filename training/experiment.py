@@ -74,9 +74,9 @@ if __name__ == '__main__':
 
     trainer.train_splitted(epochs)
 
+    executionTime = (time.time() - startTime)
     save_wc_emb(vocab,epochs,experiment_name)
     save_w_emb(vocab,epochs,experiment_name)
-    executionTime = (time.time() - startTime)
     print('Execution time in seconds: ' + str(executionTime))
 
     trainer.close_files()

@@ -172,7 +172,7 @@ class Base_ModelTrainer:
         reduced = tf.math.reduce_sum(summe)
         return reduced
 
-    def load(self,id, zeile, spalte):
+    def load(self,id, zeile, spalte,block_list):
         if(id == 0):
             self.load_block(zeile,spalte)
             self.load_block_async(block_list[id+1][0],block_list[id+1][1])
@@ -250,7 +250,7 @@ class Base_ModelTrainer:
         
             enumerated = enumerate(block_list)
             for id,(zeile,spalte) in enumerated:
-                self.load(id,zeile,spalte)
+                self.load(id,zeile,spalte,block_list)
                 
                 #self.load_block(zeile,spalte)
                 #print(zeile,spalte)
