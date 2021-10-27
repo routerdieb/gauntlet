@@ -17,7 +17,6 @@ class AllMemoryTrainer(Base_ModelTrainer):
     #conversion, pushes this already to gpu storage.
 
     def load(self,id, zeile, spalte):
-        print('correct load')
         coocurrence = self.blocks[(zeile,spalte)]
         if (spalte > zeile):
             coocurrence = np.transpose(coocurrence)
