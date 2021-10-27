@@ -24,7 +24,7 @@ def save_wc_emb(vocab,epochs,experiment_name):
 
     print(weights.shape)
     matrix = weights + np.transpose(context_weights)
-    with open('..//embeddings//'+experiment_name+'_'+epochs+'_wc','w+',encoding='utf8') as file:
+    with open('..//embeddings//'+experiment_name+'_'+str(epochs)+'_wc','w+',encoding='utf8') as file:
         for index,word in enumerate(vocab.id2Word):
             file.write(word)
             vector = matrix[:,index]
@@ -40,7 +40,7 @@ def save_w_emb(vocab,epochs,experiment_name):
 
     print(weights.shape)
     matrix = weights + np.transpose(context_weights)
-    with open('..//embeddings//'+experiment_name+'_'+epochs+'w','w+',encoding='utf8') as file:
+    with open('..//embeddings//'+experiment_name+'_'+str(epochs)+'w','w+',encoding='utf8') as file:
         for index,word in enumerate(vocab.id2Word):
             file.write(word)
             vector = matrix[:,index]
