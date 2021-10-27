@@ -20,7 +20,7 @@ if __name__ == '__main__':
 
     for file_name in os.listdir(folder_in):
         print(file_name)
-        with open(folder_in + '/' +file_name,'r') as file_in, open(folder_in + '/' +file_name,'w+') as file_out:
+        with open(folder_in + '/' +file_name,'r') as file_in, open(folder_out + '/' +file_name,'w+') as file_out:
             lines = file_in.readlines()
             for line in lines:
                 match = re.match('\(([0-9]{1,}), ([0-9]{1,})\):([0-9.]{1,})',line)
