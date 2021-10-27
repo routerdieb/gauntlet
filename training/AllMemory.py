@@ -7,7 +7,7 @@ class AllMemoryTrainer(Base_ModelTrainer):
     blocks = {}
 
     def prepare(self,basepath,experiment_name,symmetrie=True):
-        super.prepare(basepath,experiment_name)
+        super().prepare(basepath,experiment_name)
         for i in range(self.amount_split):
             for j in range(self.amount_split):
                 if symmetrie and j > i:
