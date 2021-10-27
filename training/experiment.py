@@ -77,5 +77,5 @@ if __name__ == '__main__':
     executionTime = (time.time() - startTime)
     print('Execution time in seconds: ' + str(executionTime))
 
-    trainer._close_files()
+    trainer.close_files()
 
