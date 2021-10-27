@@ -36,6 +36,7 @@ class Base_ModelTrainer:
         self.bias = self.f.create_dataset("bias", (1,self.vocab_length))
         self.csv_writer = CSV_writer(basepath,experiment_name+".csv")
 
+        self.init_weights()
         self._init_matrices()
 
     def _init_matrices(self,chunk_size=10000):
@@ -64,11 +65,11 @@ class Base_ModelTrainer:
         self.experiment_name = experiment_name
         self.f = h5py.File(basepath + '//{filename}.hdf5'.format(filename=experiment_name), "w")
         
-        self.load_weights()
+        self.init_weights()
         self.load_optimizer()
         self.csv_writer = CSV_writer(basepath,experiment_name+".csv",appendmode = True)
 
-    def load_weights(self):
+    def init_weights(self):
         iterations = math.ceil(self.vocab_length/self.block_length) 
         self.tf_weights,self.tf_con_weights,self.tf_bias, self.tf_con_bias  = \
         [None]*iterations,[None]*iterations,[None]*iterations,[None]*iterations
@@ -168,7 +169,7 @@ class Base_ModelTrainer:
         log_X = tf.math.log(co_occurences + self.ones_symetrical)
         summe = bias_terms + weight_matrix - log_X
         summe = tf.math.square(summe)
-        summe = self.scale_fn(co_occurences) * summe#elemen wise
+        summe = self.scale_fn(co_occurences) * summe#elemend wise
         reduced = tf.math.reduce_sum(summe)
         return reduced
 

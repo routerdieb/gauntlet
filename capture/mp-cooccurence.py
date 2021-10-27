@@ -12,7 +12,7 @@ from math import *
 from Vocabulary import *
 import cloudpickle
 
-messageParameters = 'Please provide vocab , wiki-path and window_size and number of processes and output folder and [--taggedVocab] [--noDyn] [--writesize XYZ] [--pushevery XY]'
+messageParameters = 'Please provide vocab , wiki-path and window_size and number of processes and output folder and [--taggedVocab] [--noDyn] [--writesize XYZ] [--pushevery XY][--asymetrical]'
 
 class Co_Occurence_Capturer:
 
@@ -35,7 +35,7 @@ class Co_Occurence_Capturer:
     # The window is applied on the left and the right.
     # A window size of 0 means, just the focus_word.
     # Article tokens is of type list
-    def capture(self,vocab,article_tokens,window_size,dynWindow=True):
+    def capture(self,vocab,article_tokens,window_size,dynWindow=True,is_asymetrical=False):
         article_ids = []
         for token in article_tokens:
             ids = vocab.get_ids_text(token)
@@ -49,6 +49,9 @@ class Co_Occurence_Capturer:
                 dist = abs(len(window_left) - position)
                 self._assign_entrys(focus_ids,context_ids,dist,dynWindow) 
         
+            if(is_asymetrical):
+                continue
+
             window_right = article_ids[focus_position+1:focus_position+1+window_size]
             for position,context_ids in enumerate(window_right):
                 dist = abs(1+ position)
@@ -74,7 +77,7 @@ def preprocess_line(text):
 
 
 push_every_x = 15
-def worker(q_files,q_co_oc,vocab,window_size,output_folder,num_processes,is_dyn_window):
+def worker(q_files,q_co_oc,vocab,window_size,num_processes,is_dyn_window,is_asymetrical):
     index = 0
     while True:
         while (q_co_oc.qsize() >  num_processes / 2):#slow down
@@ -96,7 +99,7 @@ def worker(q_files,q_co_oc,vocab,window_size,output_folder,num_processes,is_dyn_
                     pass
                 else:
                     line = preprocess_line(line)
-                    capturer.capture(vocab,line.split(),window_size,is_dyn_window)
+                    capturer.capture(vocab,line.split(),window_size,dynWindow=is_dyn_window,is_asymetrical=is_asymetrical)
         index += 1
         if (index > 0 and index % push_every_x == 0):
             q_co_oc.put(capturer.co_occurences)
@@ -124,9 +127,11 @@ if __name__ == '__main__':
     num_processes = int(sys.argv[4])
     output_folder = sys.argv[5]
 
+    #defaults
     collet_x_before_write = 300
     is_tagged = False
     is_dyn_window = True
+    is_asymetrical = False
 
     i = 6
     while len(sys.argv) > i:
@@ -144,6 +149,8 @@ if __name__ == '__main__':
             push_every_x = int(sys.argv[i+1])
             i+=2
             continue
+        elif(sys.argv[i] == '--asymetrical'):
+            is_asymetrical = True
         else:
             raise ValueError(messageParameters)
         i += 1
@@ -165,7 +172,7 @@ if __name__ == '__main__':
 
     process_list = []
     for process_id in range(num_processes):
-            p = Process(target=worker, args=(q_files,q_co_oc,vocab,window_size,output_folder,num_processes,is_dyn_window))
+            p = Process(target=worker, args=(q_files,q_co_oc,vocab,window_size,num_processes,is_dyn_window,is_asymetrical))
             p.start()
             process_list.append(p)
             print('started #' + str(process_id))
