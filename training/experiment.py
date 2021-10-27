@@ -67,7 +67,7 @@ if __name__ == '__main__':
     epochs = int(sys.argv[5])
 
     tf.keras.backend.clear_session()
-    trainer = AllMemoryTrainer(size,"E:\\tmp\\hdf_m",vector_size=200)
+    trainer = AllMemoryTrainer(size,path_in,vector_size=200)
     trainer.prepare(path_out,experiment_name+'_'+str(epochs)+"_epochs")
 
     startTime = time.time()
