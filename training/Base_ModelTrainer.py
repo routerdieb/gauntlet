@@ -115,7 +115,7 @@ class Base_ModelTrainer:
         else:
             template = "tf_cooccurence_{i}_{j}.hdf".format(i=spalte,j=zeile)
         
-        return  self.block_path + '\\' + template
+        return  os.join(self.block_path ,template)
         
     file_que = queue.Queue()
     
