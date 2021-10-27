@@ -95,7 +95,7 @@ def worker(q_files,q_co_oc,vocab,window_size,num_processes,is_dyn_window,is_asym
             capturer = Co_Occurence_Capturer()
             in_lines = in_file.readlines()
             for line in in_lines:
-                if line.startswith('<doc') or '</doc' in line[0:50]:
+                if line.startswith('<doc') or '</doc>' in line[0:100]:
                     pass
                 else:
                     line = preprocess_line(line)
