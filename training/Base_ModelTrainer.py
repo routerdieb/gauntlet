@@ -11,6 +11,7 @@ import random
 import math
 import threading
 import time
+import threading, queue
 
 class Base_ModelTrainer:
     def __init__(self,vocab_length,block_path,vector_size = 100):
