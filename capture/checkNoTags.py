@@ -1,3 +1,8 @@
+import sys
+sys.path.append('../')
+from Vocabulary import *
+import os
+
 if __name__ == '__main__':
     if len(sys.argv) < 3:
         raise ValueError('Please provide vocab, file-in folder')
