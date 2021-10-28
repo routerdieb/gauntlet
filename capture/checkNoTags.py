@@ -1,10 +1,9 @@
 if __name__ == '__main__':
-    if len(sys.argv) < 4:
-        raise ValueError('Please provide vocab, file-in folder and file-out folder')
+    if len(sys.argv) < 3:
+        raise ValueError('Please provide vocab, file-in folder')
     vocab = Vocabulary()
     vocab.load(sys.argv[1])
     folder_in =  sys.argv[2]
-    folder_out =  sys.argv[3]
 
     filtered = []
     for word in vocab.word2Id:
