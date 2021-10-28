@@ -31,4 +31,4 @@ if __name__ == '__main__':
                     pass
                 else:
                     file_out.write(line)
-                    file_out.write('\n')
+                    #file_out.write('\n')
