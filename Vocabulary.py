@@ -102,74 +102,46 @@ class Vocabulary:
             self.word2Id[word] = number
             self.id2Word.append(word)
         else:
-            raise Error
+            raise Exception('Ids already calculated')
     
 class TaggedVocabulary(Vocabulary):
-    def __init__(self,wordsWithoutTags = False):
+    def __init__(self,includeWords_wo_Tags = False):
         super(TaggedVocabulary, self).__init__()
-        self.wordsWithoutTags = wordsWithoutTags
+        self.includeWords_wo_Tags = includeWords_wo_Tags
 
 
     def build_from_text(self,text):
-        for word in text:
-            word = word.lower()
-            if(not self.wordsWithoutTags):
-                try:
-                    self.word_frequency[word]+=1
-                except KeyError:
-                    self.word_frequency[word]=1
-            split = word.split(chr(4))
-
-            if(self.wordsWithoutTags):
-                try:
-                    self.word_frequency[split[0]]+=1
-                except KeyError:
-                    self.word_frequency[split[0]]=1
+        for token in text:
+            token = token.lower()
+            try:
+                self.word_frequency[token]+=1
+            except KeyError:
+                self.word_frequency[token]=1
+            
+            split = token.split(chr(4))
 
             if len(split) == 1:
                 continue
+
+            if(self.includeWords_wo_Tags):
+                try:
+                    self.word_frequency[split[0]] += 1
+                except KeyError:
+                    self.word_frequency[split[0]]  = 1
+
             tag = split[1]
             if(tag == ''):
                 continue
             tag = chr(4)+tag
             try:
-                self.word_frequency[tag]+=1
+                self.word_frequency[tag]+= 1
             except KeyError:
-                self.word_frequency[tag]=1
-
-
+                self.word_frequency[tag] = 1
 
 
     def filter_just_symbol_tokens(self):
         self.word_frequency = {k:v for k,v in self.word_frequency.items() if k.startswith(chr(4)) or  re.search('[a-zA-Z0-9]', k)!= None }
-
-    def get_contrained_ids_text(self,token,segment):
-        token = token.lower()
-        eof = chr(4)
-        id_list = []
-        #text (or tokenised text)
-        try:
-            token_id = self.word2Id[token]
-            if(segment*self.block_length <= token_id < (segment+1)*self.block_length):
-                id_list.append(token_id)
-        except KeyError:
-            pass
-        #text + pos
-        try:
-            split = token.split(chr(4))
-            if len(split) == 1:
-                raise KeyError()
-            tag = split[1]
-            if(tag == ''):
-                raise KeyError()
-            tag = chr(4)+tag
-            tag_id = self.word2Id[tag]
-            if(segment*self.block_length <= tag_id < (segment+1)*self.block_length):
-                id_list.append(tag_id)
-        except KeyError:
-            pass
-        return id_list
-
+    
     def get_ids_text(self,token):
         token = token.lower()
         eof = chr(4)
@@ -180,7 +152,20 @@ class TaggedVocabulary(Vocabulary):
             id_list.append(token_id)
         except KeyError:
             pass
-        #text + pos
+        #text without token
+        if(self.includeWords_wo_Tags):
+            try:
+                split = token.split(chr(4))
+                if len(split) == 1:
+                    raise KeyError()
+                word = split[0]
+                if(word == ''):
+                    raise KeyError()
+                tag_id = self.word2Id[word]
+                id_list.append(tag_id)
+            except KeyError:
+                pass
+        #pos
         try:
             split = token.split(chr(4))
             if len(split) == 1:
