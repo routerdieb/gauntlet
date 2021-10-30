@@ -26,12 +26,12 @@ def preprocess_line(text):
     #text = re.sub(r' \\[^\s]{1,}','',text)
     #text = re.sub(r' /[^\s]{1,}','',text)
     #text = re.sub("\s?[^a-zA-Z\d\s:\u0004]","",text)
-    text = re.sub(r'[\'\".,?!]',"",text)
+    text = re.sub(r'[\'\",?!]',"",text)
     return text
 
-def process_dirs(path,dir_list,queue,andTags):
+def process_dirs(path,dir_list,queue,andTags,andBase):
     if (andTags):
-        vocab = TaggedVocabulary()
+        vocab = TaggedVocabulary(includeWords_wo_Tags=andBase)
     else:
         vocab = Vocabulary()
     for directory_name in dir_list:
@@ -63,12 +63,16 @@ if __name__ == '__main__':
     num_processes = int(sys.argv[3])
     
     andTags = False
-    if len(sys.argv) > 4:
-        if (sys.argv[4] == '--andTags'):
+    andBase = False
+    i = 4
+    while len(sys.argv) > i:
+        if (sys.argv[i] == '--andTags'):
             andTags = True
+        elif sys.argv[i] == '--andBase':
+            andBase = True
         else:
             raise ValueError('Please provide preprocessed wikipath and filename of vocabulary and number of processes [--andTags]')
-
+        i += 1
 
     splitted_dirs = []
     for process in range(num_processes):
