@@ -53,7 +53,7 @@ def process_dirs(path,dir_list,queue,andTags,andBase):
 
 if __name__ == '__main__':
     if len(sys.argv) < 4:
-        raise ValueError('Please provide preprocessed wikipath and filename of vocabulary and number of processes [--andTags]')
+        raise ValueError('Please provide preprocessed wikipath and filename of vocabulary and number of processes [--andTags][--andBase]')
     pqueue = Queue()
     path = sys.argv[1]
     save_file = sys.argv[2]
@@ -85,7 +85,7 @@ if __name__ == '__main__':
 
     startTime = time.time()
     for process_id in range(num_processes):
-            p = Process(target=process_dirs, args=(path,splitted_dirs[process_id],pqueue,andTags))
+            p = Process(target=process_dirs, args=(path,splitted_dirs[process_id],pqueue,andTags,andBase))
             p.start()
             process_list.append(p)
             print('started #' + str(process_id))
