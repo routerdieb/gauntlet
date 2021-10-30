@@ -12,7 +12,7 @@ from math import *
 from Vocabulary import *
 import cloudpickle
 
-messageParameters = 'Please provide vocab , wiki-path and window_size and number of processes and output folder and [--taggedVocab] [--noDyn] [--writesize XYZ] [--pushevery XY][--asymetrical]'
+messageParameters = 'Please provide vocab , wiki-path and window_size and number of processes and output folder and [--taggedVocab] [--noDyn] [--writesize XYZ] [--pushevery XY][--asymetrical][--andBase]'
 
 class Co_Occurence_Capturer:
 
@@ -132,12 +132,16 @@ if __name__ == '__main__':
     is_tagged = False
     is_dyn_window = True
     is_asymetrical = False
+    andBaseword = False
 
     i = 6
     while len(sys.argv) > i:
         if (sys.argv[i] == '--taggedVocab'):
             is_tagged = True
             print('is_tagged')
+        elif(sys.argv[i] == '--andBase'):
+            andBaseword = True
+            print('baseword will be captured')
         elif(sys.argv[i] == '--noDyn'):
             is_dyn_window = False
             print('no dyn')
@@ -156,7 +160,7 @@ if __name__ == '__main__':
         i += 1
 
     if is_tagged:
-        vocab = TaggedVocabulary()
+        vocab = TaggedVocabulary(includeWords_wo_Tags=andBaseword)
     else:
         vocab = Vocabulary()
     vocab.load(sys.argv[1])
