@@ -121,7 +121,7 @@ class TaggedVocabulary(Vocabulary):
             split = token.split(chr(4))
 
             if len(split) == 1:
-                continue
+                continue#in cases of ,"?! or a combination of these being a token
 
             if(self.includeWords_wo_Tags):
                 try:
@@ -156,8 +156,6 @@ class TaggedVocabulary(Vocabulary):
         if(self.includeWords_wo_Tags):
             try:
                 split = token.split(chr(4))
-                if len(split) == 1:
-                    raise KeyError()
                 word = split[0]
                 if(word == ''):
                     raise KeyError()
@@ -168,7 +166,7 @@ class TaggedVocabulary(Vocabulary):
         #pos
         try:
             split = token.split(chr(4))
-            if len(split) == 1:
+            if len(split) == 1:#either no tag, or just tag either case it is already included
                 raise KeyError()
             tag = split[1]
             if(tag == ''):
