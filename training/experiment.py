@@ -69,7 +69,7 @@ if __name__ == '__main__':
 
     if len(sys.argv) > 6:
         if(sys.argv[6] == '--lr'):
-            lr = int(sys.argv[7])
+            lr = float(sys.argv[7])
         else:
             raise ValueError(parameterMessage)
     if len(sys.argv) > 7:
