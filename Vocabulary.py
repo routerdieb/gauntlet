@@ -120,7 +120,7 @@ class TaggedVocabulary(Vocabulary):
             
             split = token.split(chr(4))
 
-            if len(split) == 1:
+            if len(split) == 1 and token.startswith(chr(4)):
                 continue#in cases of ,"?! or a combination of these being a token
 
             if(self.includeWords_wo_Tags):
