@@ -15,7 +15,7 @@ from tensorflow.keras import mixed_precision
 import threading, queue
 
 class Base_ModelTrainer:
-    def __init__(self,vocab_length,block_path,vector_size = 100):
+    def __init__(self,vocab_length,block_path,vector_size,lr):
         self.vector_size = vector_size
         # AND HERE IT IS AGAIN
         self.block_length = 5000
@@ -24,6 +24,7 @@ class Base_ModelTrainer:
         self.block_path = block_path
         self.vocab_length = vocab_length
         self.optimizer = None
+        self.lr = lr
         self.ones_symetrical = tf.ones((self.block_length,self.block_length), dtype=tf.dtypes.float32, name=None)
     
     def prepare(self,basepath,experiment_name):
@@ -231,10 +232,10 @@ class Base_ModelTrainer:
 
         
         if (self.optimizer == None and use_grad_clipping):
-            self.optimizer = tf.keras.optimizers.Adagrad(learning_rate=0.01,clipvalue=100.0)
+            self.optimizer = tf.keras.optimizers.Adagrad(learning_rate=self.lr,clipvalue=100.0)
             self.init_weights()
         elif(self.optimizer == None):
-            self.optimizer = tf.keras.optimizers.Adagrad(learning_rate=0.03)
+            self.optimizer = tf.keras.optimizers.Adagrad(learning_rate=self.lr)
             self.init_weights()
         if(mixedPrecision):
             policy = mixed_precision.Policy('mixed_float16')
