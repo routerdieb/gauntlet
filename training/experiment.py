@@ -72,9 +72,9 @@ if __name__ == '__main__':
             lr = float(sys.argv[7])
         else:
             raise ValueError(parameterMessage)
-    if len(sys.argv) > 7:
-        if(sys.argv[6] == '--dims'):
-            dim = int(sys.argv[7])
+    if len(sys.argv) > 8:
+        if(sys.argv[8] == '--dims'):
+            dim = int(sys.argv[9])
         else:
             raise ValueError(parameterMessage)
 
