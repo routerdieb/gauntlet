@@ -129,14 +129,15 @@ class TaggedVocabulary(Vocabulary):
                 except KeyError:
                     self.word_frequency[split[0]]  = 1
 
-            tag = split[1]
-            if(tag == ''):
-                continue
-            tag = chr(4)+tag
-            try:
-                self.word_frequency[tag]+= 1
-            except KeyError:
-                self.word_frequency[tag] = 1
+            if len(split) > 1:
+                tag = split[1]
+                if(tag == ''):
+                    continue
+                tag = chr(4)+tag
+                try:
+                    self.word_frequency[tag]+= 1
+                except KeyError:
+                    self.word_frequency[tag] = 1
 
 
     def filter_just_symbol_tokens(self):
