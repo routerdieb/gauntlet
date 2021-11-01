@@ -15,7 +15,6 @@ from csv_writer import *
 import random
 
 from AllMemory import *
-from Base_ModelTrainer import *
 
 def save_wc_emb(vocab,epochs,experiment_name):
     weights = trainer.f.get('weights')
@@ -70,12 +69,12 @@ if __name__ == '__main__':
 
     if len(sys.argv) > 6:
         if(sys.argv[6] == '--lr'):
-            lr = int(sys.argv[7])
+            lr = float(sys.argv[7])
         else:
             raise ValueError(parameterMessage)
-    if len(sys.argv) > 7:
-        if(sys.argv[6] == '--dims'):
-            dim = int(sys.argv[7])
+    if len(sys.argv) > 8:
+        if(sys.argv[8] == '--dims'):
+            dim = int(sys.argv[9])
         else:
             raise ValueError(parameterMessage)
 
@@ -93,5 +92,4 @@ if __name__ == '__main__':
     print('Execution time in seconds: ' + str(executionTime))
 
     trainer.close_files()
-
 
