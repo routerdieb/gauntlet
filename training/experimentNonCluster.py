@@ -16,7 +16,7 @@ import random
 
 from AllMemory import *
 
-def save_wc_emb(vocab,epochs,experiment_name):
+def save_wc_emb(output_path,vocab,epochs,experiment_name):
     weights = trainer.f.get('weights')
     weights = weights[:]
     context_weights = trainer.f.get('context-weights')
@@ -24,7 +24,7 @@ def save_wc_emb(vocab,epochs,experiment_name):
 
     print(weights.shape)
     matrix = weights + np.transpose(context_weights)
-    with open('..//embeddings//'+experiment_name+'_'+str(epochs)+'_wc','w+',encoding='utf8') as file:
+    with open(output_path+'/'+experiment_name+'_'+str(epochs)+'_wc','w+',encoding='utf8') as file:
         for index,word in enumerate(vocab.id2Word):
             file.write(word)
             vector = matrix[:,index]
@@ -32,7 +32,7 @@ def save_wc_emb(vocab,epochs,experiment_name):
                 file.write(' '+str(coord))
             file.write('\n')
 
-def save_w_emb(vocab,epochs,experiment_name):
+def save_w_emb(output_path,vocab,epochs,experiment_name):
     weights = trainer.f.get('weights')
     weights = weights[:]
     context_weights = trainer.f.get('context-weights')
@@ -40,7 +40,7 @@ def save_w_emb(vocab,epochs,experiment_name):
 
     print(weights.shape)
     matrix = weights + np.transpose(context_weights)
-    with open('..//embeddings//'+experiment_name+'_'+str(epochs)+'w','w+',encoding='utf8') as file:
+    with open(output_path+'/'+experiment_name+'_'+str(epochs)+'w','w+',encoding='utf8') as file:
         for index,word in enumerate(vocab.id2Word):
             file.write(word)
             vector = matrix[:,index]
@@ -87,8 +87,8 @@ if __name__ == '__main__':
     trainer.train_splitted(epochs)
 
     executionTime = (time.time() - startTime)
-    save_wc_emb(vocab,epochs,experiment_name)
-    save_w_emb(vocab,epochs,experiment_name)
+    save_wc_emb(path_out,vocab,epochs,experiment_name)
+    save_w_emb(path_out,vocab,epochs,experiment_name)
     print('Execution time in seconds: ' + str(executionTime))
 
     trainer.close_files()
