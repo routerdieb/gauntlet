@@ -13,10 +13,13 @@ if __name__ == '__main__':
     folder_out =  sys.argv[3]
 
     filtered = []
+    filtered_ids = []
     for word in vocab.word2Id:
         if word.startswith(chr(4)):
             filtered.append(word)
             print(word)
+            filtered_ids.append(vocab.word2Id[word])
+    print(filtered_ids)
 
     for file_name in os.listdir(folder_in):
         print(file_name)
@@ -27,7 +30,7 @@ if __name__ == '__main__':
                 x = int(match.group(1))
                 y = int(match.group(2))
                 count = float(match.group(3))
-                if x in filtered or y in filtered:
+                if x in filtered_ids or y in filtered_ids:
                     pass
                 else:
                     file_out.write(line)

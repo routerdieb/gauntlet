@@ -72,7 +72,7 @@ class Co_Occurence_Capturer:
 
 import re
 def preprocess_line(text):
-    text = re.sub(r'[\'\".,?!]',"",text)
+    text = re.sub(r'[\'\",?!]',"",text)
     return text
 
 
