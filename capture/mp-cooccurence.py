@@ -142,6 +142,8 @@ if __name__ == '__main__':
             print('is_tagged')
         elif(sys.argv[i] == '--andBase'):
             andBaseword = True
+            if not is_tagged:
+                raise ValueError('--andBase needs a tagged vocab')
             print('baseword will be captured')
         elif(sys.argv[i] == '--noDyn'):
             is_dyn_window = False
@@ -157,6 +159,8 @@ if __name__ == '__main__':
         elif(sys.argv[i] == '--asymetrical'):
             is_asymetrical = True
         elif(sys.argv[i] == '--noTagRep'):
+            if not is_tagged:
+                raise ValueError('--noTagRep needs a tagged vocab')
             with_tag_rep = False
         else:
             raise ValueError(messageParameters)
