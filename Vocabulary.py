@@ -105,9 +105,10 @@ class Vocabulary:
             raise Exception('Ids already calculated')
     
 class TaggedVocabulary(Vocabulary):
-    def __init__(self,includeWords_wo_Tags = False):
+    def __init__(self,includeWords_wo_Tags = False,with_tag_rep = True):
         super(TaggedVocabulary, self).__init__()
         self.includeWords_wo_Tags = includeWords_wo_Tags
+        self.with_tag_rep = with_tag_rep 
 
 
     def build_from_text(self,text):
@@ -129,7 +130,7 @@ class TaggedVocabulary(Vocabulary):
                 except KeyError:
                     self.word_frequency[split[0]]  = 1
 
-            if len(split) > 1:
+            if len(split) > 1 and self.with_tag_rep:
                 tag = split[1]
                 if(tag == ''):
                     continue
