@@ -18,9 +18,9 @@ messageParameters = 'Please provide path_in path_out [--splitLengthBy X] [--proc
 
 def load_dict(path,zeilen,spalten):
     if(zeilen >= spalten):
-        template = "blockcounts_{i}_{j}".format(i=zeilen,j=spalten)
+        template = "\\blockcounts_{i}_{j}".format(i=zeilen,j=spalten)
     else:
-        template = "blockcounts_{i}_{j}".format(i=spalten,j=zeilen)
+        template = "\\blockcounts_{i}_{j}".format(i=spalten,j=zeilen)
 
     file_path = path + '/' + template
     co_occurences = {}
