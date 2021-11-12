@@ -31,6 +31,6 @@ if __name__ == '__main__':
                 y = int(match.group(2))
                 count = float(match.group(3))
                 if x in filtered_ids or y in filtered_ids:
-                    raise Excption("found a tag")
+                    raise Exception("found a tag")
                 else:
                     pass
