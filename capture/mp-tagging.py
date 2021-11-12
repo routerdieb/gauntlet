@@ -61,29 +61,22 @@ def process_dir(path,directorys):
     
 if __name__ == '__main__':
     if len(sys.argv) != 4:
-        raise ValueError('Please provide preprocessed wikipath and filename of vocabulary and number of processes')
-    path = sys.argv[1]
+        raise ValueError('Please provide preprocessed wikipath and out path and num processes')
+    pathIn = sys.argv[1]
     pathOut = sys.argv[2]
-    dir_list = os.listdir(path)
-
-    #In case it is needed to continue at some folder
-    # number = 0
-    #for i in range(len(dir_list)):
-    #    if dir_list[i] == 'EE':
-    #       number = i
-    #for i in range(number):
-    #    dir_list.pop(0)
+    dir_list = os.listdir(pathIn)
 
     print(dir_list)
-    num_processes = 16
+    num_processes = int(sys.argv[3])
     iterations = math.ceil(len(dir_list) / num_processes)
+
     for iteration in range(iterations):
         process_list = []
         for process_id in range(num_processes):
             offset = num_processes * iteration
             if(offset + process_id < len(dir_list)):
                 print(dir_list[offset + process_id])
-                p = Process(target=process_dir, args=(pathIn,pathOut,path,[dir_list[offset + process_id]],))
+                p = Process(target=process_dir, args=(pathIn,pathOut,pathIn,[dir_list[offset + process_id]],))
                 p.start()
                 process_list.append(p)
                 print('started #' + str(process_id))

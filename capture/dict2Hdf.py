@@ -22,7 +22,7 @@ def load_dict(path,zeilen,spalten):
     else:
         template = "blockcounts_{i}_{j}".format(i=spalten,j=zeilen)
 
-    file_path = path + '\\' + template
+    file_path = path + '/' + template
     co_occurences = {}
     
     
@@ -58,7 +58,7 @@ def load_co_occurence(path,zeilen,spalten):
         coocurrence = coocurrence + tril(coocurrence,k=-1).transpose()
     return coocurrence
 
-def process_block(q_files,input_folder,output_folder,size):
+def process_block(q_files,input_folder,output_folder,size,split_length):
     regex = r'blockcounts_([0-9]{1,})_([0-9]{1,})'
     while True: 
         task = q_files.get()
@@ -82,7 +82,7 @@ def process_block(q_files,input_folder,output_folder,size):
                 #print(a,b)
                 filename = 'tf_cooccurence_{a}_{b}.hdf'.format(a = a,b = b)
             
-                f = h5py.File( output_folder +filename, "w")#plus experiment name
+                f = h5py.File( output_folder + '/'+filename, "w")#plus experiment name
                 co_occurence_hdf = f.create_dataset("co-ocurrence", (size, size))
                 part = co_occurence[sub_i*size:(sub_i+1)*size,sub_j*size:(sub_j+1)*size]
                 co_occurence_hdf[:,:] = part
@@ -96,7 +96,7 @@ if __name__ == '__main__':
     output_folder = sys.argv[2]
     num_processes = 4
 
-    split_length = 4 #2,4,5,10 A value of 5 is recommeded => CUDA Cores
+    split_length = 4 #2,4,5,10 A value of 5 is recommeded => (block length divisable through 16) Tensor Cores
     i = 3
     while (len(sys.argv) > i):
         if(sys.argv[i] == '--splitLengthBy'):
@@ -124,7 +124,7 @@ if __name__ == '__main__':
     process_list = []
 
     for process_id in range(num_processes):
-            p = Process(target=process_block, args=(q_files,input_folder,output_folder,size))
+            p = Process(target=process_block, args=(q_files,input_folder,output_folder,size,split_length))
             p.start()
             process_list.append(p)
             print('started #' + str(process_id))
@@ -132,6 +132,7 @@ if __name__ == '__main__':
     print('last phase')
     for process in process_list:
         process.join()
+    print('done')
 
 
     

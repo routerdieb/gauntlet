@@ -2,7 +2,7 @@ import sys
 sys.path.append('../')
 from Vocabulary import *
 import os
-
+import re
 
 if __name__ == '__main__':
     if len(sys.argv) < 4:

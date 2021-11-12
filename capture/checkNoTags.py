@@ -2,6 +2,7 @@ import sys
 sys.path.append('../')
 from Vocabulary import *
 import os
+import re
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
@@ -11,10 +12,14 @@ if __name__ == '__main__':
     folder_in =  sys.argv[2]
 
     filtered = []
+    filtered_ids = []
     for word in vocab.word2Id:
         if word.startswith(chr(4)):
             filtered.append(word)
             print(word)
+            print(vocab.word2Id[word])
+            filtered_ids.append(vocab.word2Id[word])
+    print(filtered_ids)
 
     for file_name in os.listdir(folder_in):
         print(file_name)
@@ -25,9 +30,7 @@ if __name__ == '__main__':
                 x = int(match.group(1))
                 y = int(match.group(2))
                 count = float(match.group(3))
-                if x in filtered or y in filtered:
-                    raise Exception("Found a tag")
+                if x in filtered_ids or y in filtered_ids:
+                    raise Excption("found a tag")
                 else:
                     pass
-                    #file_out.write(line)
-                    #file_out.write('\n')
