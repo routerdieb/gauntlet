@@ -84,25 +84,6 @@ class Vocabulary:
             pass
         return []
 
-
-    def get_contrained_ids_text(self,word,segment):
-        word = word.lower()
-        try:
-            word_id = self.word2Id[word]
-            if(segment*self.block_length <= word_id < (segment+1)*self.block_length):
-                return [word_id]
-        except KeyError:
-            pass
-        return []
-
-
-    def add_word(self,word):
-        if self.areIdsCaculated:
-            number = len(self.word2Id)
-            self.word2Id[word] = number
-            self.id2Word.append(word)
-        else:
-            raise Exception('Ids already calculated')
     
 class TaggedVocabulary(Vocabulary):
     def __init__(self,includeWords_wo_Tags = False,with_tag_rep = True):
