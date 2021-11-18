@@ -1,0 +1,15 @@
+NOUN#captial common country
+NOUN#city in state
+NOUN#capital country
+NOUN#currency
+NOUN#family
+------
+ADJECTIVE=>ADVERB#adjective to adverb 1
+ADJECTIVE#opposite 2
+ADJECTIVE#comparative 3
+ADJECTIVE#superlative 4
+VERB#present participle 5
+NOUN=>VERB#nationality-adjective 6
+VERB#past tense 7
+NOUN=>VERB#plural 8
+

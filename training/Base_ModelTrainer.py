@@ -89,9 +89,14 @@ class Base_ModelTrainer:
             self.optimizer = cloudpickle.load(file)
 
     def close_files(self):
-        self.f.close()
-        self.csv_writer.close()
-            
+        try:
+            self.f.close()
+        except:
+            pass
+        try:
+            self.csv_writer.close()
+        except:
+            pass
     
     def block_file_path(self,zeile,spalte):
         # load the hdf coocurence block

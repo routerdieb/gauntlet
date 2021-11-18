@@ -17,10 +17,13 @@ import random
 from AllMemory import *
 
 def save_wc_emb(output_path,vocab,epochs,experiment_name):
-    weights = trainer.f.get('weights')
-    weights = weights[:]
-    context_weights = trainer.f.get('context-weights')
-    context_weights = context_weights[:]
+    w, c = [None] * len(trainer.tf_weights), [None] * len(trainer.tf_con_weights)
+    for i in range(len(trainer.tf_weights)):
+        w[i] = trainer.tf_weights[i].numpy()
+        c[i] = trainer.tf_con_bias[i].numpy()
+
+    weights = np.concatenate(w,axis=1)
+    context_weights = np.concatenate(c,axis=0)
 
     print(weights.shape)
     matrix = weights + np.transpose(context_weights)
@@ -33,10 +36,13 @@ def save_wc_emb(output_path,vocab,epochs,experiment_name):
             file.write('\n')
 
 def save_w_emb(output_path,vocab,epochs,experiment_name):
-    weights = trainer.f.get('weights')
-    weights = weights[:]
-    context_weights = trainer.f.get('context-weights')
-    context_weights = context_weights[:]
+    w, c = [None] * len(trainer.tf_weights), [None] * len(trainer.tf_con_weights)
+    for i in range(len(trainer.tf_weights)):
+        w[i] = trainer.tf_weights[i].numpy()
+        c[i] = trainer.tf_con_bias[i].numpy()
+
+    weights = np.concatenate(w,axis=1)
+    context_weights = np.concatenate(c,axis=0)
 
     print(weights.shape)
     matrix = weights + np.transpose(context_weights)
