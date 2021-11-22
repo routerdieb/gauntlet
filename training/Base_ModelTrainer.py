@@ -25,19 +25,40 @@ class Base_ModelTrainer:
         self.vocab_length = vocab_length
         self.optimizer = None
         self.lr = lr
-        self.ones_symetrical = tf.ones((self.block_length,self.block_length), dtype=tf.dtypes.float32)
+        self.ones_symetrical = tf.ones((self.block_length,self.block_length), dtype=tf.dtypes.float32, name=None)
     
     def prepare(self,basepath,experiment_name):
         self.basepath = basepath
         self.experiment_name = experiment_name
+        self.f = h5py.File(basepath + '//{filename}.hdf5'.format(filename=experiment_name), "w")
         #initalize all the HDF files
+        self.con_weights = self.f.create_dataset("context-weights", (self.vocab_length, self.vector_size))
+        self.weights = self.f.create_dataset("weights",(self.vector_size,self.vocab_length))
+        self.context_bias = self.f.create_dataset("context-bias", (self.vocab_length,1))
+        self.bias = self.f.create_dataset("bias", (1,self.vocab_length))
         self.csv_writer = CSV_writer(basepath,experiment_name+".csv")
 
         self.init_weights()
-        self.f = None
+        self._init_matrices()
 
-        
+    def _init_matrices(self,chunk_size=10000):
+        self._init_hdf_matrix(self.weights,-0.5,0.5,chunk_size)
+        self._init_hdf_matrix(self.con_weights,-0.5,0.5,chunk_size)
+        self._init_hdf_matrix(self.context_bias,-0.5,0.5,chunk_size)
+        self._init_hdf_matrix(self.bias,-0.5,0.5,chunk_size)
 
+
+    def _init_hdf_matrix(self,hdf_data,min_value,max_value,block_length):
+        if len(hdf_data) > len(hdf_data[0]):
+            iterations = int(math.ceil(len(hdf_data) / float(block_length)))
+            for i in range(iterations):
+                current_size = min(block_length,len(hdf_data)-block_length*i)
+                hdf_data[i*block_length:(i+1)*block_length , :] = np.random.rand(current_size,len(hdf_data[0]))/self.vector_size
+        else:
+            iterations = int(math.ceil(len(hdf_data[0]) / float(block_length)))
+            for i in range(iterations):
+                current_size = min(block_length,len(hdf_data[0])-block_length*i)
+                hdf_data[:,i*block_length:(i+1)*block_length] = np.random.rand(len(hdf_data),current_size)/self.vector_size
 
 
 
@@ -47,7 +68,7 @@ class Base_ModelTrainer:
         self.f = h5py.File(basepath + '//{filename}.hdf5'.format(filename=experiment_name), "w")
         
         self.init_weights()
-        self.load_optimizer(self.basepath + '//{filename}.opt'.format(filename=experiment_name))
+        self.load_optimizer()
         self.csv_writer = CSV_writer(basepath,experiment_name+".csv",appendmode = True)
 
     def init_weights(self):
@@ -59,14 +80,10 @@ class Base_ModelTrainer:
             # seems like i don't need fillage
             block_fillage = min(self.block_length, self.vocab_length - iter * self.block_length)
             
-            rand1 = tf.random.uniform((block_fillage,self.vector_size),minval=-1,maxval=1,dtype=tf.dtypes.float32)/self.vector_size
-            rand2 = tf.random.uniform((self.vector_size,block_fillage),minval=-1,maxval=1,dtype=tf.dtypes.float32)/self.vector_size
-            b_rand1 = tf.random.uniform((block_fillage,1),minval=-1,maxval=1,dtype=tf.dtypes.float32)/self.vector_size
-            b_rand2 = tf.random.uniform((1,block_fillage),minval=-1,maxval=1,dtype=tf.dtypes.float32)/self.vector_size
-            self.tf_weights[iter]    = tf.Variable(initial_value=rand2,dtype=tf.dtypes.float32)
-            self.tf_con_weights[iter]= tf.Variable(initial_value=rand1,dtype=tf.dtypes.float32)
-            self.tf_bias[iter]       = tf.Variable(initial_value=b_rand2,dtype=tf.dtypes.float32)
-            self.tf_con_bias[iter]   = tf.Variable(initial_value=b_rand1,dtype=tf.dtypes.float32)
+            self.tf_weights[iter]    = tf.Variable(initial_value=self.weights[:,iter * self.block_length:(iter+1)*self.block_length],dtype=tf.dtypes.float32)
+            self.tf_con_weights[iter]= tf.Variable(initial_value=self.con_weights[iter * self.block_length:(iter+1)*self.block_length,:],dtype=tf.dtypes.float32)
+            self.tf_bias[iter]       = tf.Variable(initial_value=self.bias[:,iter * self.block_length:(iter+1)*self.block_length],dtype=tf.dtypes.float32)
+            self.tf_con_bias[iter]   = tf.Variable(initial_value=self.context_bias[iter * self.block_length:(iter+1)*self.block_length,:],dtype=tf.dtypes.float32)
         
         
     def save_weights(self):
@@ -80,23 +97,18 @@ class Base_ModelTrainer:
             self.bias[:,iter * self.block_length:(iter+1)*self.block_length] = self.tf_bias[iter].numpy()
             self.con_weights[iter * self.block_length:(iter+1)*self.block_length,:] = self.tf_con_weights[iter].numpy()
            
-    def save_optimizer(self):
-        with open(self.basepath + '//{filename}.opt'.format(filename=self.experiment_name), 'wb') as file:
+    def save_optimizer(self,file_path):
+        with open(file_path, 'wb') as file:
             cloudpickle.dump(self.optimizer, file)
 
-    def load_optimizer(self):
-        with open(self.basepath + '//{filename}.opt'.format(filename=self.experiment_name), 'rb+') as file:
+    def load_optimizer(self,file_path):
+        with open(file_path, 'rb+') as file:
             self.optimizer = cloudpickle.load(file)
 
     def close_files(self):
-        try:
-            self.f.close()
-        except:
-            pass
-        try:
-            self.csv_writer.close()
-        except:
-            pass
+        self.f.close()
+        self.csv_writer.close()
+            
     
     def block_file_path(self,zeile,spalte):
         # load the hdf coocurence block
@@ -173,6 +185,11 @@ class Base_ModelTrainer:
 
     def loss(self,zeile,spalte,weights,context_weights,bias,con_bias,co_occurences):
         
+        #print(weights.shape)
+        #print(context_weights.shape)
+        #print(bias.shape)
+        #print(con_bias.shape)
+    
         #just the words context
         if(zeile == self.amount_split - 1):
             difference = self.block_length - con_bias.shape[0]
@@ -208,13 +225,11 @@ class Base_ModelTrainer:
         return tf.pow(clipped / self.XMAX, self.alpha)
     
 
-    def train_splitted(self,epochs,use_grad_clipping = False,mixedPrecision = False,saveSteps = False):
-        if saveSteps == True and self.f == None:
-            self.f = h5py.File(self.basepath + '//{filename}.hdf5'.format(filename=self.experiment_name), "w")
-            self.con_weights = self.f.create_dataset("context-weights", (self.vocab_length, self.vector_size))
-            self.weights = self.f.create_dataset("weights",(self.vector_size,self.vocab_length))
-            self.context_bias = self.f.create_dataset("context-bias", (self.vocab_length,1))
-            self.bias = self.f.create_dataset("bias", (1,self.vocab_length))
+
+
+
+    def train_splitted(self,epochs,use_grad_clipping = False,mixedPrecision = False):
+
         
         if (self.optimizer == None and use_grad_clipping):
             self.optimizer = tf.keras.optimizers.Adagrad(learning_rate=self.lr,clipvalue=100.0)
@@ -237,6 +252,10 @@ class Base_ModelTrainer:
             enumerated = enumerate(block_list)
             for id,(zeile,spalte) in enumerated:
                 self.load(id,zeile,spalte,block_list)
+                
+                #self.load_block(zeile,spalte)
+                #print(zeile,spalte)
+
                     
                 #train code
                 with tf.GradientTape() as tape:
@@ -265,9 +284,7 @@ class Base_ModelTrainer:
                         self.optimizer.apply_gradients(zip(grads, weights))
                     cur_loss += tmp_loss.numpy()
                            
-            if saveSteps:
-                self.save_weights()
-                self.save_optimizer()    
+            self.save_weights()    
             print('epoch: '+str(epoch)+" loss: "+str(int(cur_loss)))
             #lrOnPlato.notify_loss(cur_loss.numpy(),epoch)
             self.csv_writer.write('Adagrad',0.5,epoch+1,cur_loss)

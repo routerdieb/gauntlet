@@ -1,0 +1,15 @@
+NNP#captial common country
+NNP#city in state
+NNP#capital country
+NN#currency
+NN#family
+------
+JJ=>RB#adjective to adverb 1
+(RB,JJ)#opposite 2
+JJ=>JJR#comparative 3
+JJ=>JJS#superlative 4
+VB=>VBG#present participle 5
+NNP=>JJ#nationality-adjective 6
+VBG=>VBD#past tense 7
+NN => NNS# plural only
+NN=>VBZ#plural verb 9
