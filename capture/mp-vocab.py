@@ -22,34 +22,29 @@ process_vocabs = []
 lock = multiprocessing.Lock()
 
 import re
-class baseVocabCapture():
-    def preprocess_line(self,text):
-        #text = re.sub(r' \\[^\s]{1,}','',text)
-        #text = re.sub(r' /[^\s]{1,}','',text)
-        #text = re.sub("\s?[^a-zA-Z\d\s:\u0004]","",text)
-        text = re.sub(r'[\'\",?!]',"",text)
-        return text
 
-    def process_dirs(path,dir_list,queue,andTags,andBase):
-        if (andTags):
-            vocab = TaggedVocabulary(includeWords_wo_Tags=andBase)
-        else:
-            vocab = Vocabulary()
-        for directory_name in dir_list:
-            print(directory_name)
-            for file_name in os.listdir(path + "/" + directory_name):
-                file_path = os.path.join(path, directory_name,file_name)
-                with open(file_path,'r',encoding='utf8') as in_file:
-                    in_lines = in_file.readlines()
-                    for line in in_lines:
-                        if line.startswith('<doc') or line.startswith('</doc') or line.startswith(' </doc'):
-                            pass
-                        else:
-                            #tokens = tokenizer(line)
-                            #print(line[0:10])
-                            line = preprocess_line(line)
-                            vocab.build_from_text(line.split())
-        queue.put(vocab) 
+def preprocess_line(text):
+    text = re.sub(r'[\'\",?!]',"",text)
+    return text
+
+def process_dirs(path,dir_list,queue,andTags,andBase):
+    if (andTags):
+        vocab = TaggedVocabulary(includeWords_wo_Tags=andBase)
+    else:
+        vocab = Vocabulary()
+    for directory_name in dir_list:
+        print(directory_name)
+        for file_name in os.listdir(path + "/" + directory_name):
+            file_path = os.path.join(path, directory_name,file_name)
+            with open(file_path,'r',encoding='utf8') as in_file:
+                in_lines = in_file.readlines()
+                for line in in_lines:
+                    if line.startswith('<doc') or line.startswith('</doc') or line.startswith(' </doc'):
+                        pass
+                    else:
+                        line = preprocess_line(line)
+                        vocab.build_from_text(line.split())
+    queue.put(vocab) 
                     
 
 if __name__ == '__main__':
@@ -85,11 +80,8 @@ if __name__ == '__main__':
     process_list = []
 
     startTime = time.time()
-    list_objects = []
     for process_id in range(num_processes):
-            vocabcapt = baseVocabCapture()
-            list_objects.append(vocabcapt)#so we keep a pointer
-            p = Process(target=vocabcapt.process_dirs, args=(path,splitted_dirs[process_id],pqueue,andTags,andBase))
+            p = Process(target=process_dirs, args=(path,splitted_dirs[process_id],pqueue,andTags,andBase))
             p.start()
             process_list.append(p)
             print('started #' + str(process_id))
