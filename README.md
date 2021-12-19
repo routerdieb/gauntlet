@@ -1,6 +1,6 @@
 # gauntlet
 
-A Framework for extensions of GloVe. (There Gauntlet as in the medival gauntlet)
+A Framework for extensions of GloVe.  Gauntlet as in the medival gauntlet, which is put on top of GloVe.
 
 Attention:
 This Project has quite high hardware requirements.
