@@ -1,3 +1,4 @@
+   
 import cloudpickle
 import os
 import sys
@@ -14,7 +15,7 @@ import time
 from tensorflow.keras import mixed_precision
 import threading, queue
 
-class Base_ModelTrainer:
+class Base_ModelTrainer2:
     def __init__(self,vocab_length,block_path,vector_size,lr):
         self.vector_size = vector_size
         # AND HERE IT IS AGAIN
@@ -38,9 +39,8 @@ class Base_ModelTrainer:
         self.bias = self.f.create_dataset("bias", (1,self.vocab_length))
         self.csv_writer = CSV_writer(basepath,experiment_name+".csv")
 
-        
-        self._init_matrices()
         self.init_weights()
+        self._init_matrices()
 
     def _init_matrices(self,chunk_size=10000):
         self._init_hdf_matrix(self.weights,-0.5,0.5,chunk_size)
@@ -83,8 +83,6 @@ class Base_ModelTrainer:
             
             self.tf_weights[iter]    = tf.Variable(initial_value=self.weights[:,iter * self.block_length:(iter+1)*self.block_length],dtype=tf.dtypes.float32)
             self.tf_con_weights[iter]= tf.Variable(initial_value=self.con_weights[iter * self.block_length:(iter+1)*self.block_length,:],dtype=tf.dtypes.float32)
-            #self.tf_bias[iter] = tf.Variable(initial_value=tf.zeros((1,block_fillage),dtype=tf.dtypes.float32),dtype=tf.dtypes.float32)
-            #self.tf_con_bias[iter]   = tf.Variable(initial_value=tf.zeros((block_fillage,1),dtype=tf.dtypes.float32),dtype=tf.dtypes.float32)
             self.tf_bias[iter]       = tf.Variable(initial_value=self.bias[:,iter * self.block_length:(iter+1)*self.block_length],dtype=tf.dtypes.float32)
             self.tf_con_bias[iter]   = tf.Variable(initial_value=self.context_bias[iter * self.block_length:(iter+1)*self.block_length,:],dtype=tf.dtypes.float32)
         
@@ -116,9 +114,9 @@ class Base_ModelTrainer:
     def block_file_path(self,zeile,spalte):
         # load the hdf coocurence block
         if(zeile >= spalte):
-            template = "tf_cooccurence_{i}_{j}.tensor".format(i=zeile,j=spalte)
+            template = "tf_cooccurence_{i}_{j}.hdf".format(i=zeile,j=spalte)
         else:
-            template = "tf_cooccurence_{i}_{j}.tensor".format(i=spalte,j=zeile)
+            template = "tf_cooccurence_{i}_{j}.hdf".format(i=spalte,j=zeile)
         
         return  os.path.join(self.block_path ,template)
         
@@ -127,26 +125,18 @@ class Base_ModelTrainer:
     
     
     
-    #def load_block(self,zeile,spalte):
-    #    file_path =  self.block_file_path(zeile,spalte)
-    #    
-    #    
-    #    tmp_hf = h5py.File(file_path, "r")
-    #    coocurrence = tmp_hf.get("co-ocurrence")[:]
-    #    if (spalte > zeile):
-    #        coocurrence = np.transpose(coocurrence)
-    #    self.tf_co_occurences = tf.convert_to_tensor(coocurrence,dtype=tf.dtypes.float32)
-    #    coocurrence = None
-    #    tmp_hf.close()
-    
-    def load_block(self,zeile,spalte):        
+    def load_block(self,zeile,spalte):
         file_path =  self.block_file_path(zeile,spalte)
         
-        with open(file_path, 'rb') as file:
-            self.tf_co_occurences = cloudpickle.load(file)
         
+        tmp_hf = h5py.File(file_path, "r")
+        coocurrence = tmp_hf.get("co-ocurrence")[:]
         if (spalte > zeile):
-            self.tf_co_occurences = tf.transpose(self.tf_co_occurences)
+            coocurrence = np.transpose(coocurrence)
+        self.tf_co_occurences = tf.convert_to_tensor(coocurrence,dtype=tf.dtypes.float32)
+        coocurrence = None
+        tmp_hf.close()
+    
     
     
     def load_block_async(self,zeile,spalte):
@@ -161,21 +151,14 @@ class Base_ModelTrainer:
     def thread_load(self,zeile,spalte):
         file_path =  self.block_file_path(zeile,spalte)
         
-        #tmp_hf = h5py.File(file_path, "r")
-        #coocurrence = tmp_hf.get("co-ocurrence")[:]
-        #if (spalte > zeile):
-        #    coocurrence = np.transpose(coocurrence)
-        #tf_co_occurences = tf.convert_to_tensor(coocurrence,dtype=tf.dtypes.float32)
-        #coocurrence = None
-        #tmp_hf.close()
-        
-        
-        with open(file_path, 'rb') as file:
-            tf_co_occurences = cloudpickle.load(file)
-        
+        tmp_hf = h5py.File(file_path, "r")
+        coocurrence = tmp_hf.get("co-ocurrence")[:]
         if (spalte > zeile):
-            tf_co_occurences = tf.transpose(tf_co_occurences)
-
+            coocurrence = np.transpose(coocurrence)
+        tf_co_occurences = tf.convert_to_tensor(coocurrence,dtype=tf.dtypes.float32)
+        coocurrence = None
+        tmp_hf.close()
+        
         self.file_que.put(tf_co_occurences)
         tf_co_occurences = None
         

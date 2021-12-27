@@ -14,7 +14,7 @@ import csv
 from csv_writer import *
 import random
 
-from AllMemory import *
+from Base_ModelTrainer2 import *
 
 def save_wc_emb(output_path,vocab,epochs,experiment_name):
     w, c = [None] * len(trainer.tf_weights), [None] * len(trainer.tf_con_weights)
@@ -85,7 +85,7 @@ if __name__ == '__main__':
             raise ValueError(parameterMessage)
 
     tf.keras.backend.clear_session()
-    trainer = Base_ModelTrainer(size,path_in,vector_size=dim,lr=lr)
+    trainer = Base_ModelTrainer2(size,path_in,vector_size=dim,lr=lr)
     trainer.prepare(path_out,experiment_name+'_'+str(epochs)+"_epochs")
 
     startTime = time.time()
