@@ -1,4 +1,5 @@
 import json
+from operator import contains
 import re
 import numpy as np
 
@@ -54,6 +55,9 @@ class Vocabulary:
     def filter_just_symbol_tokens(self):
         self.word_frequency = dict(filter(lambda y: re.search(r'[a-zA-Z0-9]{1,}',y[0])!= None,self.word_frequency.items()))        
     
+    def filter_equals(self):
+        self.word_frequency = dict(filter(lambda y: "=" not in y[0])!= None,self.word_frequency.items())
+
     def assignIds(self,shuffle=True):
         i = 0 
         for k in self.word_frequency.keys():
@@ -76,6 +80,9 @@ class Vocabulary:
             return len(self.word_frequency)
         
     def get_ids_text(self,word):
+        return self.get_ids_exact(word)
+    
+    def get_ids_exact(self,word):
         word = word.lower()
         try:
             word_id = self.word2Id[word]
@@ -160,3 +167,5 @@ class TaggedVocabulary(Vocabulary):
         except KeyError:
             pass
         return id_list
+
+

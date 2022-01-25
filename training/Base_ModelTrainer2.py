@@ -41,7 +41,7 @@ class Base_ModelTrainer2:
 
         self.init_weights()
         self._init_matrices()
-
+        
     def _init_matrices(self,chunk_size=10000):
         self._init_hdf_matrix(self.weights,-0.5,0.5,chunk_size)
         self._init_hdf_matrix(self.con_weights,-0.5,0.5,chunk_size)
@@ -185,11 +185,6 @@ class Base_ModelTrainer2:
                 self.load_block_async(next[0],next[1])
 
     def loss(self,zeile,spalte,weights,context_weights,bias,con_bias,co_occurences):
-        
-        #print(weights.shape)
-        #print(context_weights.shape)
-        #print(bias.shape)
-        #print(con_bias.shape)
     
         #just the words context
         if(zeile == self.amount_split - 1):
@@ -229,14 +224,11 @@ class Base_ModelTrainer2:
 
 
 
-    def train_splitted(self,epochs,use_grad_clipping = True,mixedPrecision = False):
+    def train_splitted(self,epochs,mixedPrecision = False):
 
-        
-        if (self.optimizer == None and use_grad_clipping):
+        #if optimizer is set, than this is continue training
+        if (self.optimizer == None):
             self.optimizer = tf.keras.optimizers.Adagrad(learning_rate=self.lr,clipvalue=100.0)
-            self.init_weights()
-        elif(self.optimizer == None):
-            self.optimizer = tf.keras.optimizers.Adagrad(learning_rate=self.lr)
             self.init_weights()
         if(mixedPrecision):
             policy = mixed_precision.Policy('mixed_float16')
@@ -248,15 +240,10 @@ class Base_ModelTrainer2:
             
             block_list = [(x,y) for x in range(self.amount_split) for y in range(self.amount_split) if x >= y]
             random.shuffle(block_list)
-            #print(block_list)
         
             enumerated = enumerate(block_list)
             for id,(zeile,spalte) in enumerated:
                 self.load(id,zeile,spalte,block_list)
-                
-                #self.load_block(zeile,spalte)
-                #print(zeile,spalte)
-
                     
                 #train code
                 with tf.GradientTape() as tape:
@@ -266,6 +253,7 @@ class Base_ModelTrainer2:
                     weights = [self.tf_weights[spalte],self.tf_con_weights[zeile],\
                     self.tf_bias[spalte],self.tf_con_bias[zeile]]
                     grads = tape.gradient(tmp_loss, weights)
+                    #grads, _ = tf.clip_by_global_norm(grads, 5.0)
                     self.optimizer.apply_gradients(zip(grads, weights))
                 cur_loss += tmp_loss.numpy()
                      
@@ -282,7 +270,8 @@ class Base_ModelTrainer2:
                         self.tf_bias[zeile],self.tf_con_bias[spalte]]
                         
                         grads = tape.gradient(tmp_loss, weights)
-                        self.optimizer.apply_gradients(zip(grads, weights))
+                        #capped_grads = [tf.clip_by_norm(grad,5.0) for grad in grads]
+                    self.optimizer.apply_gradients(zip(grads, weights))
                     cur_loss += tmp_loss.numpy()
                            
             self.save_weights()    

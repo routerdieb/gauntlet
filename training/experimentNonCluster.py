@@ -56,7 +56,7 @@ def save_w_emb(output_path,vocab,epochs,experiment_name):
 
 
 
-parameterMessage = 'Please provide vocab,hdf-path,output-path and experiment name and epochs --lr x.y --dims AAA'
+parameterMessage = 'Please provide vocab,hdf-path,output-path and experiment name and epochs (or epoch1,epoch2,..) --lr x.y --dims AAA'
 if __name__ == '__main__':
     print('starting')
     if len(sys.argv) < 1+5:
@@ -71,7 +71,11 @@ if __name__ == '__main__':
     path_out = sys.argv[3]
 
     experiment_name = sys.argv[4]
-    epochs = int(sys.argv[5])
+    epochs = [int(i) for i in sys.argv[5].split(",")]
+    epochs.sort()
+    epochs_og = epochs.copy()
+    for index in range(1,len(epochs)):
+        epochs[index] -= epochs_og[index-1]
 
     if len(sys.argv) > 6:
         if(sys.argv[6] == '--lr'):
@@ -89,13 +93,13 @@ if __name__ == '__main__':
     trainer.prepare(path_out,experiment_name+'_'+str(epochs)+"_epochs")
 
     startTime = time.time()
-
-    trainer.train_splitted(epochs)
+    for next_training_steps,overall_epochs in zip(epochs,epochs_og):
+        trainer.train_splitted(next_training_steps)
+        save_wc_emb(path_out,vocab,overall_epochs,experiment_name)
+        save_w_emb(path_out,vocab,overall_epochs,experiment_name)
 
     executionTime = (time.time() - startTime)
-    save_wc_emb(path_out,vocab,epochs,experiment_name)
-    save_w_emb(path_out,vocab,epochs,experiment_name)
-    print('Execution time in seconds: ' + str(executionTime))
+    print('Final Execution time in seconds: ' + str(executionTime))
 
     trainer.close_files()
 

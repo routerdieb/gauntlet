@@ -12,7 +12,7 @@ import os
 import sys
 from multiprocessing import Process, Queue
 
-# It is recommeded to have blocks diviside by 16. E.g. 4000x4000 => --splitLengthBy 5.
+# It is possible, that blocks diviside by 16 have a Performance Gain => TensorCore Utilization. E.g. 4000x4000 => --splitLengthBy 5.
 # The default blocks have size of 20000, the blocks must be divisible by splitlength 
 messageParameters = 'Please provide path_in path_out [--splitLengthBy X] [--processes XY]'
 
@@ -48,14 +48,6 @@ def load_co_occurence(path,zeilen,spalten):
     
     coocurrence._update(co_occurences_dict)
     
-    if spalten > zeilen :
-        raise Exception("You sha'll not get symmetrical context")
-        #may need to fix this in the future due to other non symmetrical feature
-    
-    if spalten == zeilen:
-        print('mirroring')
-        #print(coocurrence.toarray())
-        coocurrence = coocurrence + tril(coocurrence,k=-1).transpose()
     return coocurrence
 
 def process_block(q_files,input_folder,output_folder,size,split_length):

@@ -24,7 +24,8 @@ lock = multiprocessing.Lock()
 import re
 
 def preprocess_line(text):
-    text = re.sub(r'[\'\",?!]',"",text)
+    text = re.sub(r'[\'\",?!\.]',"",text)
+    #text = re.sub(r'. '," ",text)
     return text
 
 def process_dirs(path,dir_list,queue,andTags,andBase):
