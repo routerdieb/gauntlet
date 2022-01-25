@@ -3,12 +3,11 @@ import numpy as np
 
 import os
 import sys
-sys.path.append("..")
 import multiprocessing
 from multiprocessing import Process, Queue
 from math import *
 
-from co_occurence import *
+from co_occurence import Co_Occurence_Capturer
 from Vocabulary import *
 
 import re
