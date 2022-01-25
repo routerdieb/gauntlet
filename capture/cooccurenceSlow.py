@@ -22,7 +22,7 @@ def process_dir(dir_list,path,vocab,window_size,output_folder):
     for directory_name in dir_list:
         capturer = Co_Occurence_Capturer()
         for file_name in os.listdir(path + "/" + directory_name):
-            file_path = path + '\\'+directory_name+'\\'+file_name
+            file_path = path + '/'+directory_name+'/'+file_name
             print(file_name)
             with open(file_path,'r',encoding='utf8') as in_file:
                 in_lines = in_file.readlines()
@@ -32,7 +32,7 @@ def process_dir(dir_list,path,vocab,window_size,output_folder):
                     else:
                         line = preprocess_line(line)
                         capturer.capture(vocab,line.split(),window_size)
-        capturer.save_coocurrences(output_folder+'\\'+directory_name + '.co')
+        capturer.save_coocurrences(output_folder+'/'+directory_name + '.co')
 
 
 if __name__ == '__main__':
