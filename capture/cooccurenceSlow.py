@@ -23,7 +23,7 @@ def process_dir(dir_list,path,vocab,window_size,output_folder):
         capturer = Co_Occurence_Capturer()
         for file_name in os.listdir(path + "/" + directory_name):
             file_path = path + '/'+directory_name+'/'+file_name
-            print(file_name)
+            print(directory_name,file_name)
             with open(file_path,'r',encoding='utf8') as in_file:
                 in_lines = in_file.readlines()
                 for line in in_lines:
@@ -66,6 +66,7 @@ if __name__ == '__main__':
         vocab = Vocabulary()
     vocab.load(sys.argv[1])
     
+    print(vocab.get_size());
 
 
     splitted_dirs = []

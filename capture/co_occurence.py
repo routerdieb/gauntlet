@@ -23,6 +23,7 @@ class Co_Occurence_Capturer:
     # A window size of 0 means, just the focus_word.
     # Article tokens is of type list
     def capture(self,vocab,article_tokens,window_size):
+        print("capturer started")
         article_ids = []
         for token in article_tokens:
             ids = vocab.get_ids_text(token)
@@ -34,12 +35,14 @@ class Co_Occurence_Capturer:
             window_left = article_ids[max(0,focus_position-window_size):focus_position]
             for position,context_ids in enumerate(window_left):
                 dist = abs(len(window_left) - position)
-                self._assign_entrys(focus_ids,context_ids,dist) 
+                self._assign_entrys(focus_ids,context_ids,dist)
+                print("1")
         
             window_right = article_ids[focus_position+1:focus_position+1+window_size]
             for position,context_ids in enumerate(window_right):
                 dist = abs(1+ position)
                 self._assign_entrys(focus_ids,context_ids,dist)
+                print("2")
 
         return self.co_occurences
     
