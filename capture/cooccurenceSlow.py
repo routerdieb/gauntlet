@@ -8,6 +8,7 @@ from multiprocessing import Process, Queue
 from math import *
 
 from co_occurence import Co_Occurence_Capturer
+sys.path.append("..")
 from Vocabulary import *
 
 import re
