@@ -79,7 +79,7 @@ if __name__ == '__main__':
         splitted_dirs[dir_index % num_processes].append(dir)
     
     #delete this later
-    for i in range(splitted_dirs):
+    for i in range(len(splitted_dirs)):
         print(len(splitted_dirs[i]))
 
 
