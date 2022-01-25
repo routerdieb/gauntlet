@@ -19,13 +19,16 @@ def preprocess_line(text):
 
 
 def process_dir(dir_list,path,vocab,window_size,output_folder):
+    print("hello")
     for directory_name in dir_list:
         capturer = Co_Occurence_Capturer()
+        print("cap init")
         for file_name in os.listdir(path + "/" + directory_name):
             file_path = path + '/'+directory_name+'/'+file_name
             print(file_name)
             with open(file_path,'r',encoding='utf8') as in_file:
                 in_lines = in_file.readlines()
+                print("inlines"+str(len(in_lines)))
                 for line in in_lines:
                     if line.startswith('<doc') or '</doc' in line:
                         pass
@@ -75,6 +78,11 @@ if __name__ == '__main__':
         dir = dir_list[dir_index]
         splitted_dirs[dir_index % num_processes].append(dir)
     
+    #delete this later
+    for i in range(splitted_dirs):
+        print(len(splitted_dirs[i]))
+
+
     process_list = []
     for process_id in range(num_processes):
             p = Process(target=process_dir, args=(splitted_dirs[process_id],path,vocab,window_size,output_folder))
