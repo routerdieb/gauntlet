@@ -42,12 +42,12 @@ if __name__ == '__main__':
     pqueue = Queue()
     path = sys.argv[2]
 
-    dir_list = os.listdir(path)
-    number = -1
-    for i in range(len(dir_list)):
-        if dir_list[i] == 'AH':
-            number = i
-    dir_list = dir_list[number:]
+    #dir_list = os.listdir(path)
+    #number = -1
+    #for i in range(len(dir_list)):
+    #    if dir_list[i] == 'AH':
+    #        number = i
+    #dir_list = dir_list[number:]
     
     window_size = int(sys.argv[3])
     num_processes = int(sys.argv[4])
