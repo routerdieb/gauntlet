@@ -44,6 +44,7 @@ def combineAndSeperate(pathIn,pathOut,vocab):
         print('length of ' + file_name + ':' + str(len(co_occurences)))
     
         for (x,y) in co_occurences:
+            x,y = int(x), int(y)
             dict_pos_x = int(x / block_size)
             dict_pos_y = int(y / block_size)
             dict_tuple = (dict_pos_x,dict_pos_y)

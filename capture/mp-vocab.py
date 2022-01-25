@@ -11,13 +11,6 @@ import time
 
 from Vocabulary import *
 
-# Construction 2
-from spacy.lang.en import English
-nlp = English()
-# Create a Tokenizer with the default settings for English
-# including punctuation rules and exceptions
-tokenizer = nlp.tokenizer
-
 process_vocabs = []
 lock = multiprocessing.Lock()
 
