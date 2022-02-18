@@ -18,7 +18,9 @@ import re
 
 def preprocess_line(text):
     text = re.sub(r'[\'\",?!\.]',"",text)
-    #text = re.sub(r'. '," ",text)
+    text = re.sub('['+chr(4)+']sp',"",text)
+    text = re.sub('['+chr(4)+']space',"",text)
+    text = re.sub(r'[ ]{2,}',' ')
     return text
 
 def process_dirs(path,dir_list,queue,andTags,andBase):
@@ -104,7 +106,8 @@ if __name__ == '__main__':
     print(global_vocabulary.get_size())
     global_vocabulary.filter(100)
     print(global_vocabulary.get_size())
-    global_vocabulary.filterWord(''+chr(4))
+    global_vocabulary.filterWord(''+chr(4))#just the seperation symbol
+    global_vocabulary.filterWord('')#The empty Word
     print(global_vocabulary.get_size())
     global_vocabulary.assignIds()
     print('global_vocabulary_post_filtering')

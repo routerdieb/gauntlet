@@ -24,22 +24,25 @@ class Co_Occurence_Capturer:
     # The window is applied on the left and the right.
     # A window size of 0 means, just the focus_word.
     # Article tokens is of type list
-    def capture(self,vocab,article_tokens,window_size,isDyn):
-        article_ids = []
+    def capture(self,word_vocab,context_vocab,article_tokens,window_size,isDyn):
+        word_ids = []
+        context_ids = []
         for token in article_tokens:
-            ids = vocab.get_ids_text(token)
-            article_ids.append(ids)
-    
-        for focus_position,focus_ids in enumerate(article_ids):
-            window_left = article_ids[max(0,focus_position-window_size):focus_position]
-            for position,context_ids in enumerate(window_left):
+            cur_word_ids = word_vocab.get_ids_text(token)
+            word_ids.append(cur_word_ids)
+            cur_context_ids = context_vocab.get_ids_text(token)
+            context_ids.append(cur_context_ids)
+
+        for focus_position,focus_ids in enumerate(word_ids):
+            window_left = context_ids[max(0,focus_position-window_size):focus_position]
+            for position,ids in enumerate(window_left):
                 dist = abs(len(window_left) - position)
-                self._assign_entrys(focus_ids,context_ids,dist,isDyn)
+                self._assign_entrys(focus_ids,ids,dist,isDyn)
         
-            window_right = article_ids[focus_position+1:focus_position+1+window_size]
-            for position,context_ids in enumerate(window_right):
+            window_right = context_ids[focus_position+1:focus_position+1+window_size]
+            for position,ids in enumerate(window_right):
                 dist = abs(1+ position)
-                self._assign_entrys(focus_ids,context_ids,dist,isDyn)
+                self._assign_entrys(focus_ids,ids,dist,isDyn)
 
         return self.co_occurences
     

@@ -34,12 +34,13 @@ def process_file(pathIn,pathOut,directory_name,file_name,isUniversalTagset):
                     if line.startswith('<doc') or '<doc' in line[:30]:
                         outFile.write(line)
                     elif line.startswith('</doc') or '</doc' in line[:30]:
-                        outFile.write(line)
+                        #outFile.write(line)
+                        pass
                     else:
                         if fold in("cd","num"):
-                            outFile.write(find_card(line))
+                            outFile.write(find_card(line)+"\n")
                         if fold in ("cd_ordinal","num_ordinal"):
-                            outFile.write(find_cardAndOrdinalClean(line))
+                            outFile.write(find_cardAndOrdinalClean(line)+"\n")
                 
 def process_dir(pathIn,pathOut,isUniTagset,directorys):
     print('process running')

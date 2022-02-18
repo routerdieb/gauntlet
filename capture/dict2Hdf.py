@@ -78,6 +78,7 @@ def process_block(q_files,input_folder,output_folder,size,split_length):
                 co_occurence_hdf = f.create_dataset("co-ocurrence", (size, size))
                 part = co_occurence[sub_i*size:(sub_i+1)*size,sub_j*size:(sub_j+1)*size]
                 co_occurence_hdf[:,:] = part
+                f.flush()
                 f.close()
 
 if __name__ == '__main__':

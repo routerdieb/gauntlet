@@ -21,12 +21,12 @@ def preprocess_line(text):
 
 
 
-def process_dir(dir_list,path,vocab,window_size,output_folder):
+def process_dir(dir_list,path,vocab,vocab2,window_size,output_folder):
     for directory_name in dir_list:
         capturer = Co_Occurence_Capturer()
         for file_name in os.listdir(path + "/" + directory_name):
             file_path = path + '/'+directory_name+'/'+file_name
-            print(file_path)
+            print(file_name)
             with open(file_path,'r',encoding='utf8') as in_file:
                 in_lines = in_file.readlines()
                 for line in in_lines:
@@ -34,43 +34,48 @@ def process_dir(dir_list,path,vocab,window_size,output_folder):
                         pass
                     else:
                         line = preprocess_line(line)
-                        capturer.capture(vocab,line.split(),window_size,False)
+                        capturer.capture(vocab,vocab2,line.split(),window_size,False)
         capturer.save_coocurrences(output_folder+'/'+directory_name + '.co')
 
 
+
+message = 'Please provide vocab , vocab2 , wiki-path and window_size and number of processes and output folder'
+
+
 if __name__ == '__main__':
+    print("This programm asummes that the first vocab is untagged and that the second one is tagged")
     print('starting')
     if len(sys.argv) < 6:
-        raise ValueError('Please provide vocab , wiki-path and window_size and number of processes and output folder and [--taggedVocab]')
+        raise ValueError(message)
     pqueue = Queue()
     path = sys.argv[2]
 
+    print('this is noDyn noDyn , noDyn')
+    print('this is noDyn noDyn , noDyn')
+    print('this is noDyn noDyn , noDyn')
+    print('this is noDyn noDyn , noDyn')
+    print('this is noDyn noDyn , noDyn')
     dir_list = os.listdir(path)
-    
-    #filter code for continuation (insert name of last sucessful folder)
     #number = -1
     #for i in range(len(dir_list)):
-    #    if dir_list[i] == 'EP':
-    #        number = i+1
+    #    if dir_list[i] == 'AH':
+    #        number = i
     #dir_list = dir_list[number:]
-    print(dir_list)
     
-    window_size = int(sys.argv[3])
-    num_processes = int(sys.argv[4])
-    output_folder = sys.argv[5]
+    window_size = int(sys.argv[4])
+    num_processes = int(sys.argv[5])
+    output_folder = sys.argv[6]
 
-    is_tagged = False
-    if len(sys.argv) > 6:
-        if (sys.argv[6] == '--taggedVocab'):
-            is_tagged = True
-        else:
-            raise ValueError('Please provide vocab , wiki-path and window_size and number of processes and output folder and [--taggedVocab]')
+    if len(sys.argv) > 7:
+            raise ValueError(message)
     
-    if is_tagged:
-        vocab = TaggedVocabulary()
-    else:
-        vocab = Vocabulary()
+    
+    vocab = Vocabulary()
+    vocab2 = TaggedVocabulary()
+
     vocab.load(sys.argv[1])
+    vocab2.load(sys.argv[1])
+    dir_list = os.listdir(path)
 
     splitted_dirs = []
     for process in range(num_processes):
@@ -86,7 +91,7 @@ if __name__ == '__main__':
 
     process_list = []
     for process_id in range(num_processes):
-            p = Process(target=process_dir, args=(splitted_dirs[process_id],path,vocab,window_size,output_folder))
+            p = Process(target=process_dir, args=(splitted_dirs[process_id],path,vocab,vocab2,window_size,output_folder))
             p.start()
             process_list.append(p)
             print('started #' + str(process_id))

@@ -142,7 +142,7 @@ class TaggedVocabulary(Vocabulary):
             id_list.append(token_id)
         except KeyError:
             pass
-        #text without token
+        #text without token (e.g. mixed)
         if(self.includeWords_wo_Tags):
             try:
                 split = token.split(chr(4))
