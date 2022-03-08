@@ -20,7 +20,7 @@ def preprocess_line(text):
     text = re.sub(r'[\'\",?!\.]',"",text)
     text = re.sub('['+chr(4)+']sp',"",text)
     text = re.sub('['+chr(4)+']space',"",text)
-    text = re.sub(r'[ ]{2,}',' ')
+    text = re.sub(r'[ ]{2,}',' ',text)
     return text
 
 def process_dirs(path,dir_list,queue,andTags,andBase):

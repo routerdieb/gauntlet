@@ -34,7 +34,7 @@ def process_dir(dir_list,path,vocab,window_size,output_folder):
                         pass
                     else:
                         line = preprocess_line(line)
-                        capturer.capture(vocab,line.split(),window_size,False)
+                        capturer.capture(vocab,line.split(),window_size,True)
         capturer.save_coocurrences(output_folder+'/'+directory_name + '.co')
 
 

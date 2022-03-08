@@ -18,8 +18,11 @@ class Vocabulary:
     def setBlock_parms(self, block_length):
         self.block_length = block_length
 
-    def build_from_text(self,text):
-        for word in text:
+    def build_from_untokenised_text(self,text):
+        self.build_from_tokenised(text.split())
+
+    def build_from_tokenised(self,tokens):
+        for word in tokens:
             word = word.lower()
             try:
                 self.word_frequency[word]+=1
@@ -33,7 +36,6 @@ class Vocabulary:
             else:
                 dicted = {'word_frequency':self.word_frequency}
             json.dump(dicted, json_file)
-    
     
     def load(self,filename):
         with open(filename, 'r') as json_file:
@@ -167,5 +169,3 @@ class TaggedVocabulary(Vocabulary):
         except KeyError:
             pass
         return id_list
-
-
