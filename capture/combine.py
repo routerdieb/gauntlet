@@ -19,7 +19,7 @@ def load_co_occurence(name):
         return co_occurences
     
 def save_dict(path,dictionary,i,j):
-    filepath = path + '\\blockcounts_{ni}_{nj}'.format(ni=i,nj=j)
+    filepath = path + '//blockcounts_{ni}_{nj}'.format(ni=i,nj=j)
     with open(filepath, 'a+') as file:
         for k, v in dictionary.items():
             file.write("{k}:{v} \n".format(k=k,v=v))
