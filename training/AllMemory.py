@@ -3,7 +3,7 @@ import h5py
 import tensorflow as tf
 from Base_ModelTrainer import *
 
-class AllMemoryTrainer(Base_ModelTrainer):
+class AllMemoryTrainer(Base_ModelTrainer2):
     blocks = {}
 
     def prepare(self,basepath,experiment_name,symmetrie=True):
