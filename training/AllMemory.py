@@ -1,7 +1,7 @@
 import numpy as np
 import h5py
 import tensorflow as tf
-from Base_ModelTrainer import *
+from Base_ModelTrainer2 import *
 
 class AllMemoryTrainer(Base_ModelTrainer2):
     blocks = {}
