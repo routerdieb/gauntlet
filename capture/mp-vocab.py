@@ -1,4 +1,6 @@
 import math
+from pickle import TRUE
+from xml.etree.ElementInclude import include
 import numpy as np
 
 import os
@@ -24,8 +26,8 @@ def preprocess_line(text):
     return text
 
 def process_dirs(path,dir_list,queue,andTags,andBase):
-    if (andTags):
-        vocab = TaggedVocabulary(includeWords_wo_Tags=andBase)
+    if (andTags or andBase):
+        vocab = TaggedVocabulary(includeWords_wo_Tags=andBase,with_tag_rep=andTags)
     else:
         vocab = Vocabulary()
     for directory_name in dir_list:
@@ -88,9 +90,9 @@ if __name__ == '__main__':
     for process in process_list:
         process.join()
     if andTags:
-        global_vocabulary = TaggedVocabulary()
+        global_vocabulary = TaggedVocabulary()#just for joining
     else:
-        global_vocabulary = Vocabulary()
+        global_vocabulary = Vocabulary()#just for joining
     for vocab in process_vocabs:
         print(vocab.get_size())
         for word in vocab.word_frequency:

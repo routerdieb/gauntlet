@@ -95,24 +95,26 @@ class Vocabulary:
 
     
 class TaggedVocabulary(Vocabulary):
-    def __init__(self,includeWords_wo_Tags = False,with_tag_rep = True):
+    def __init__(self,includeWords_wo_Tags = False,with_tag_rep = True,fullOccurence=True):
         super(TaggedVocabulary, self).__init__()
         self.includeWords_wo_Tags = includeWords_wo_Tags
         self.with_tag_rep = with_tag_rep 
+        self.fullOccurence = fullOccurence
 
 
     def build_from_tokenised(self,text):
         for token in text:
             token = token.lower()
-            try:
-                self.word_frequency[token]+=1
-            except KeyError:
-                self.word_frequency[token]=1
+            if self.fullOccurence:
+                try:
+                    self.word_frequency[token]+=1
+                except KeyError:
+                    self.word_frequency[token]=1
             
             split = token.split(chr(4))
 
             if len(split) == 1 and token.startswith(chr(4)):
-                continue#in cases of ,"?! or a combination of these being a token
+                continue
 
             if(self.includeWords_wo_Tags):
                 try:
