@@ -101,7 +101,7 @@ class TaggedVocabulary(Vocabulary):
         self.with_tag_rep = with_tag_rep 
 
 
-    def build_from_text(self,text):
+    def build_from_tokenised(self,text):
         for token in text:
             token = token.lower()
             try:

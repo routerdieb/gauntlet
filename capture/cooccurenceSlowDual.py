@@ -7,7 +7,7 @@ import multiprocessing
 from multiprocessing import Process, Queue
 from math import *
 
-from co_occurence import Co_Occurence_Capturer
+from co_occurenceDualVocab import Co_Occurence_DualCapturer
 sys.path.append("../")
 from Vocabulary import *
 
@@ -23,7 +23,7 @@ def preprocess_line(text):
 
 def process_dir(dir_list,path,vocab,vocab2,window_size,output_folder):
     for directory_name in dir_list:
-        capturer = Co_Occurence_Capturer()
+        capturer = Co_Occurence_DualCapturer()
         for file_name in os.listdir(path + "/" + directory_name):
             file_path = path + '/'+directory_name+'/'+file_name
             print(file_name)
@@ -34,12 +34,12 @@ def process_dir(dir_list,path,vocab,vocab2,window_size,output_folder):
                         pass
                     else:
                         line = preprocess_line(line)
-                        capturer.capture(vocab,vocab2,line.split(),window_size,False)
+                        capturer.capture(vocab,vocab2,line.split(),window_size,True)
         capturer.save_coocurrences(output_folder+'/'+directory_name + '.co')
 
 
 
-message = 'Please provide vocab , vocab2 , wiki-path and window_size and number of processes and output folder'
+message = 'Please provide vocab , vocab2 , wiki-path and window_size and number of processes and output folder [--continue]'
 
 
 if __name__ == '__main__':
@@ -48,33 +48,37 @@ if __name__ == '__main__':
     if len(sys.argv) < 6:
         raise ValueError(message)
     pqueue = Queue()
-    path = sys.argv[2]
+    path = sys.argv[3]
 
-    print('this is noDyn noDyn , noDyn')
-    print('this is noDyn noDyn , noDyn')
-    print('this is noDyn noDyn , noDyn')
-    print('this is noDyn noDyn , noDyn')
-    print('this is noDyn noDyn , noDyn')
-    dir_list = os.listdir(path)
-    #number = -1
-    #for i in range(len(dir_list)):
-    #    if dir_list[i] == 'AH':
-    #        number = i
-    #dir_list = dir_list[number:]
-    
     window_size = int(sys.argv[4])
     num_processes = int(sys.argv[5])
     output_folder = sys.argv[6]
 
-    if len(sys.argv) > 7:
+    dir_list = os.listdir(path)
+    if (len(sys.argv) == 7 and sys.argv[7] == "--continue"):
+        new_Dirlist = []
+        for directory_name in dir_list:
+            path_coocurrence = output_folder+'/'+directory_name + '.co'
+            if os.path.exists(path_coocurrence):
+                pass
+            else:
+                new_Dirlist.append(directory_name)
+        dir_list = new_Dirlist
+    
+    print(dir_list)
+    
+    
+
+    if len(sys.argv) > 8:
             raise ValueError(message)
     
     
-    vocab = Vocabulary()
+    vocab = TaggedVocabulary(includeWords_wo_Tags = True)
     vocab2 = TaggedVocabulary()
+    
 
     vocab.load(sys.argv[1])
-    vocab2.load(sys.argv[1])
+    vocab2.load(sys.argv[2])
     dir_list = os.listdir(path)
 
     splitted_dirs = []
@@ -84,7 +88,6 @@ if __name__ == '__main__':
         dir = dir_list[dir_index]
         splitted_dirs[dir_index % num_processes].append(dir)
     
-    #delete this later
     for i in range(len(splitted_dirs)):
         print(len(splitted_dirs[i]))
 

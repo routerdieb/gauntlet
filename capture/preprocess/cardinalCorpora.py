@@ -69,7 +69,6 @@ if __name__ == '__main__':
                 p.start()
                 process_list.append(p)
                 print('started #' + str(process_id))
-                sleep(1)
         for p in process_list:
             p.join()
         

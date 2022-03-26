@@ -3,12 +3,14 @@ import json
 import cloudpickle
 
 import math
-class Co_Occurence_Capturer:
+import time
+class Co_Occurence_DualCapturer:
 
     def __init__(self):
         self.co_occurences = {}
         
     def _assign_entrys(self,word_ids,context_ids,dist,isDyn):
+        #print(word_ids, "    ", context_ids)
         if not isDyn:
             dist = 1.0
         for word_id in word_ids:
@@ -35,15 +37,18 @@ class Co_Occurence_Capturer:
 
         for focus_position,focus_ids in enumerate(word_ids):
             window_left = context_ids[max(0,focus_position-window_size):focus_position]
+           
             for position,ids in enumerate(window_left):
                 dist = abs(len(window_left) - position)
                 self._assign_entrys(focus_ids,ids,dist,isDyn)
         
             window_right = context_ids[focus_position+1:focus_position+1+window_size]
+            
             for position,ids in enumerate(window_right):
                 dist = abs(1+ position)
                 self._assign_entrys(focus_ids,ids,dist,isDyn)
 
+        time.sleep(2)
         return self.co_occurences
     
     def save_coocurrences(self,file_name):

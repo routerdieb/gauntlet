@@ -37,34 +37,42 @@ def process_dir(dir_list,path,vocab,window_size,output_folder):
                         capturer.capture(vocab,line.split(),window_size,True)
         capturer.save_coocurrences(output_folder+'/'+directory_name + '.co')
 
-
+message = 'Please provide vocab , wiki-path and window_size and number of processes and output folder and [--taggedVocab] [--continue]';
 if __name__ == '__main__':
     print('starting')
     if len(sys.argv) < 6:
-        raise ValueError('Please provide vocab , wiki-path and window_size and number of processes and output folder and [--taggedVocab]')
+        raise ValueError(message)
     pqueue = Queue()
     path = sys.argv[2]
 
     dir_list = os.listdir(path)
-    
-    #filter code for continuation (insert name of last sucessful folder)
-    #number = -1
-    #for i in range(len(dir_list)):
-    #    if dir_list[i] == 'EP':
-    #        number = i+1
-    #dir_list = dir_list[number:]
-    print(dir_list)
-    
     window_size = int(sys.argv[3])
     num_processes = int(sys.argv[4])
     output_folder = sys.argv[5]
+    
+    print(dir_list)
+    dir_list = os.listdir(path)
+    if (len(sys.argv) == 7 and sys.argv[7] == "--continue"):
+        new_Dirlist = []
+        for directory_name in dir_list:
+            path_coocurrence = output_folder+'/'+directory_name + '.co'
+            if os.path.exists(path_coocurrence):
+                pass
+            else:
+                new_Dirlist.append(directory_name)
+        dir_list = new_Dirlist
+    
+    print(dir_list)
+    
+    
 
     is_tagged = False
     if len(sys.argv) > 6:
         if (sys.argv[6] == '--taggedVocab'):
             is_tagged = True
         else:
-            raise ValueError('Please provide vocab , wiki-path and window_size and number of processes and output folder and [--taggedVocab]')
+            raise ValueError(message)
+        
     
     if is_tagged:
         vocab = TaggedVocabulary()

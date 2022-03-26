@@ -39,7 +39,7 @@ def process_dirs(path,dir_list,queue,andTags,andBase):
                         pass
                     else:
                         line = preprocess_line(line)
-                        vocab.build_from_text(line.split())
+                        vocab.build_from_untokenised_text(line)
     queue.put(vocab) 
                     
 
