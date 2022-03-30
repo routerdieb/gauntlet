@@ -73,14 +73,8 @@ if __name__ == '__main__':
 
     print(dir_list)
     
-    
-
-    
-    
-        
-    
     if is_tagged:
-        vocab = TaggedVocabulary()
+        vocab = TaggedVocabulary(includeWords_wo_Tags = True,with_tag_rep = True,fullOccurence=True)#The vocabulary has already been determined
     else:
         vocab = Vocabulary()
     vocab.load(sys.argv[1])
