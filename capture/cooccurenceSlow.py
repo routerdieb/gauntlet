@@ -54,7 +54,7 @@ if __name__ == '__main__':
     
     print(dir_list)
     dir_list = os.listdir(path)
-    if len(sys.argv > 6):
+    if len(sys.argv) > 6:
         for i in range(6,len(sys.argv)):
             if (sys.argv[i] == "--continue"):
                 new_Dirlist = []
