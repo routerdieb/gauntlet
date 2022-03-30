@@ -55,7 +55,7 @@ if __name__ == '__main__':
     output_folder = sys.argv[6]
 
     dir_list = os.listdir(path)
-    if (len(sys.argv) == 7 and sys.argv[7] == "--continue"):
+    if (len(sys.argv) > 7 and sys.argv[7] == "--continue"):
         new_Dirlist = []
         for directory_name in dir_list:
             path_coocurrence = output_folder+'/'+directory_name + '.co'

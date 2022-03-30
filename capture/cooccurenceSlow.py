@@ -49,29 +49,34 @@ if __name__ == '__main__':
     window_size = int(sys.argv[3])
     num_processes = int(sys.argv[4])
     output_folder = sys.argv[5]
+
+    is_tagged = False
     
     print(dir_list)
     dir_list = os.listdir(path)
-    if (len(sys.argv) == 7 and sys.argv[7] == "--continue"):
-        new_Dirlist = []
-        for directory_name in dir_list:
-            path_coocurrence = output_folder+'/'+directory_name + '.co'
-            if os.path.exists(path_coocurrence):
-                pass
+    if len(sys.argv > 6):
+        for i in range(6,len(sys.argv)):
+            if (sys.argv[i] == "--continue"):
+                new_Dirlist = []
+                for directory_name in dir_list:
+                    path_coocurrence = output_folder+'/'+directory_name + '.co'
+                    if os.path.exists(path_coocurrence):
+                        pass
+                    else:
+                        new_Dirlist.append(directory_name)
+                dir_list = new_Dirlist
+
+            if (sys.argv[i] == '--taggedVocab'):
+                is_tagged = True
             else:
-                new_Dirlist.append(directory_name)
-        dir_list = new_Dirlist
-    
+                raise ValueError(message)
+
     print(dir_list)
     
     
 
-    is_tagged = False
-    if len(sys.argv) > 6:
-        if (sys.argv[6] == '--taggedVocab'):
-            is_tagged = True
-        else:
-            raise ValueError(message)
+    
+    
         
     
     if is_tagged:
