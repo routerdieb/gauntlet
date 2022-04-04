@@ -66,7 +66,7 @@ if __name__ == '__main__':
                         new_Dirlist.append(directory_name)
                 dir_list = new_Dirlist
 
-            if (sys.argv[i] == '--taggedVocab'):
+            elif (sys.argv[i] == '--taggedVocab'):
                 is_tagged = True
             else:
                 raise ValueError(message)
