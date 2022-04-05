@@ -84,7 +84,7 @@ if __name__ == '__main__':
     combineAndSeperate(pathIn,pathOut,vocab)
 
     #show that this step was completed in case of a regular server re-start
-    f = open("complete.txt", "w")
+    f = open(pathOut+"//complete.txt", "w")
     f.write("This task was completed @"+date.today())
     f.close()
     
