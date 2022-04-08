@@ -40,6 +40,7 @@ def combineAndSeperate(pathIn,pathOut,vocab):
             dict_of_dicts[(i,j)] = {}
         
     file_list = os.listdir(pathIn)
+    
     for file_name in file_list:
         co_occurences = load_co_occurence(pathIn + "//" + file_name)
         print('length of ' + file_name + ':' + str(len(co_occurences)))
@@ -59,8 +60,6 @@ def combineAndSeperate(pathIn,pathOut,vocab):
             
         for (i,j) in dict_of_dicts:
             if len(dict_of_dicts[(i,j)]) > 0:#This is untested again.
-                print('saving {i},{j}'.format(i=i,j=j))
-                print(len(dict_of_dicts[(i,j)]))
                 save_dict(pathOut,dict_of_dicts[(i,j)],i,j)
                 dict_of_dicts[(i,j)].clear()
 

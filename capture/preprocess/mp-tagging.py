@@ -6,6 +6,7 @@ import spacy
 from multiprocessing import Process
 import math
 from time import sleep
+import re
 
 
 def process_file(pathIn,pathOut,folder,file):
@@ -45,6 +46,7 @@ def process_file(pathIn,pathOut,folder,file):
                 lem_file.write(line)
                 tok_file.write(line)
             else:
+                line = re.sub("[ ]+"," ",line)
                 doc = nlp(line)
                 for token in doc:
                     ner_file.write(token.text + chr(4) + token.ent_type_ + " ")

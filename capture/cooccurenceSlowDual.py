@@ -39,7 +39,7 @@ def process_dir(dir_list,path,vocab,vocab2,window_size,output_folder):
 
 
 
-message = 'Please provide vocab , vocab2 , wiki-path and window_size and number of processes and output folder [--continue]'
+message = 'Please provide base-vocab , tagged-vocab , wiki-path and window_size and number of processes and output folder [--continue]'
 
 
 if __name__ == '__main__':

@@ -6,6 +6,7 @@ import spacy
 from multiprocessing import Process
 import math
 from time import sleep
+import re
 
 
 def process_file(pathIn,pathOut,directory_name,file_name):
@@ -25,6 +26,8 @@ def process_file(pathIn,pathOut,directory_name,file_name):
             elif line.startswith('</doc') or '</doc' in line[:30]:
                 pos_tree_file.write(line)
             else:
+                space = chr(4)+"SP"
+                line = re.sub(space,"",line)
                 doc = nlp(line)
                 for token in doc:
                     pos_tree_file.write(token.text + chr(4) + token.tag_ + " ")

@@ -4,6 +4,8 @@ A Framework for extensions of GloVe.  Gauntlet as in the medival gauntlet, which
 
 Attention:
 This Project has quite high hardware requirements.
+Espacially in tearms of disk storage.
 
 
-Please follow the Tutorial jupyther files in the tutorials folder.
+Please follow the Tutorial in the tutorial folder.
+The tutorial contain jupyther files.
