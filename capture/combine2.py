@@ -16,8 +16,7 @@ from datetime import date
 def load_co_occurence(name):
         print(name)
         with open(name, 'rb+') as file:
-            data = file.read()
-            co_occurences = cloudpickle.load(data)
+            co_occurences = cloudpickle.load(file)
         return co_occurences
     
 def save_dict(path,dictionary,i,j):
