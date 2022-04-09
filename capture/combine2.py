@@ -16,7 +16,8 @@ from datetime import date
 def load_co_occurence(name):
         print(name)
         with open(name, 'rb+') as file:
-            co_occurences = cloudpickle.load(file)
+            data = file.read()
+            co_occurences = cloudpickle.load(data)
         return co_occurences
     
 def save_dict(path,dictionary,i,j):
@@ -40,6 +41,7 @@ def combineAndSeperate(pathIn,pathOut,vocab):
             dict_of_dicts[(i,j)] = {}
         
     file_list = os.listdir(pathIn)
+    file_list.sort()
     
     for file_name in file_list:
         co_occurences = load_co_occurence(pathIn + "//" + file_name)
