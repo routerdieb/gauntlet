@@ -41,10 +41,15 @@ def combineAndSeperate(pathIn,pathOut,vocab):
         
     file_list = os.listdir(pathIn)
     file_list.sort()
-    
+    list_of_failed = []
+
     for file_name in file_list:
-        co_occurences = load_co_occurence(pathIn + "//" + file_name)
-        print('length of ' + file_name + ':' + str(len(co_occurences)))
+        try:
+            co_occurences = load_co_occurence(pathIn + "//" + file_name)
+            print('length of ' + file_name + ':' + str(len(co_occurences)))
+        except EOFError:
+            list_of_failed.append(file_name)
+            continue
     
         for (x,y) in co_occurences:
             x,y = int(x), int(y)
@@ -63,6 +68,8 @@ def combineAndSeperate(pathIn,pathOut,vocab):
             if len(dict_of_dicts[(i,j)]) > 0:#This is untested again.
                 save_dict(pathOut,dict_of_dicts[(i,j)],i,j)
                 dict_of_dicts[(i,j)].clear()
+        
+    return list_of_failed
 
 if __name__ == '__main__':
     print('starting')
@@ -81,10 +88,13 @@ if __name__ == '__main__':
     else:
         raise Exception('the block folder should be empty  ')
 
-    combineAndSeperate(pathIn,pathOut,vocab)
+    list_of_failed = combineAndSeperate(pathIn,pathOut,vocab)
 
     #show that this step was completed in case of a regular server re-start
+    print(list_of_failed)
     f = open(pathOut+"//complete.txt", "w")
     f.write("This task was completed @"+date.today())
+    f.flush()
+    f.write(str(list_of_failed))
     f.close()
     
