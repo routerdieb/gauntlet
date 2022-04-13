@@ -47,7 +47,7 @@ def combineAndSeperate(pathIn,pathOut,vocab):
         try:
             co_occurences = load_co_occurence(pathIn + "//" + file_name)
             print('length of ' + file_name + ':' + str(len(co_occurences)))
-        except EOFError:
+        except:
             list_of_failed.append(file_name)
             continue
     

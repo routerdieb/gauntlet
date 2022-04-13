@@ -1,5 +1,0 @@
-Run combine
-
-run dict 2 hdf
-
-run training
