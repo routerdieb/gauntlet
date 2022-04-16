@@ -93,7 +93,7 @@ if __name__ == '__main__':
     #show that this step was completed in case of a regular server re-start
     print(list_of_failed)
     f = open(pathOut+"//complete.txt", "w")
-    f.write("This task was completed @"+date.today())
+    f.write("This task was completed @"+ str(date.today()))
     f.flush()
     f.write(str(list_of_failed))
     f.close()
