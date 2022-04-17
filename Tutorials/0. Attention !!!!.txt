@@ -1,0 +1,3 @@
+Beware of Server restarts, especially when using a network drive.
+
+The time of running these python scripts, can be quite high, so plan your time if you have weekly server restarts.
