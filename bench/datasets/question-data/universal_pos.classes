@@ -1,7 +1,7 @@
 PROPN#captial common country
 PROPN#capital world
 PROPN#city in state
-PROPN#currency
+(NOUN,PROPN)#currency
 NOUN#family
 ADJ=>ADV#adjective to adverb 1
 ADJ#opposite 2
