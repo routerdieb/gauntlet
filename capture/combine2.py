@@ -14,7 +14,7 @@ from Vocabulary import Vocabulary
 from datetime import date
 
 def load_co_occurence(name):
-        print(name)
+        print("combine2:"+name)
         with open(name, 'rb+') as file:
             co_occurences = cloudpickle.load(file)
         return co_occurences

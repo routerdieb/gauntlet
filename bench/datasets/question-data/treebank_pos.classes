@@ -1,7 +1,7 @@
 NNP#captial common country
 NNP#city in state
 NNP#capital country
-(NN,NP)#currency
+(NN,NNP)#currency
 NN#family
 JJ=>RB#adjective to adverb 1
 (RB,JJ)#opposite 2
