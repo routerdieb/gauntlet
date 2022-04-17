@@ -26,7 +26,7 @@ def process_dir(dir_list,path,vocab,window_size,output_folder):
         capturer = Co_Occurence_Capturer()
         for file_name in os.listdir(path + "/" + directory_name):
             file_path = path + '/'+directory_name+'/'+file_name
-            print(file_path)
+            print("coocurence",file_path)
             with open(file_path,'r',encoding='utf8') as in_file:
                 in_lines = in_file.readlines()
                 for line in in_lines:
@@ -34,10 +34,10 @@ def process_dir(dir_list,path,vocab,window_size,output_folder):
                         pass
                     else:
                         line = preprocess_line(line)
-                        capturer.capture(vocab,line.split(),window_size,True)
+                        capturer.capture(vocab,line.split(),window_size)
         capturer.save_coocurrences(output_folder+'/'+directory_name + '.co')
 
-message = 'Please provide vocab , wiki-path and window_size and number of processes and output folder and [--taggedVocab] [--continue]';
+message = 'Please provide vocab , wiki-path and window_size and number of processes and output folder and [--continue]';
 if __name__ == '__main__':
     print('starting')
     if len(sys.argv) < 6:
@@ -49,8 +49,6 @@ if __name__ == '__main__':
     window_size = int(sys.argv[3])
     num_processes = int(sys.argv[4])
     output_folder = sys.argv[5]
-
-    is_tagged = False
     
     print(dir_list)
     dir_list = os.listdir(path)
@@ -66,18 +64,13 @@ if __name__ == '__main__':
                         new_Dirlist.append(directory_name)
                 dir_list = new_Dirlist
 
-            elif (sys.argv[i] == '--taggedVocab'):
-                is_tagged = True
             else:
                 raise ValueError(message)
 
     print(dir_list)
+    #Just try to find all occurence, if doesn't exist, than it is no problem => reduces human errorrate
+    vocab = TaggedVocabulary(includeWords_wo_Tags = True,with_tag_rep = True,fullOccurence=True)#The vocabulary has already been determined
     
-    if is_tagged:
-        vocab = TaggedVocabulary(includeWords_wo_Tags = True,with_tag_rep = True,fullOccurence=True)#The vocabulary has already been determined
-    else:
-        vocab = Vocabulary()
-    vocab.load(sys.argv[1])
 
     splitted_dirs = []
     for process in range(num_processes):
