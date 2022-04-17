@@ -59,9 +59,13 @@ def process_block(q_files,input_folder,output_folder,size,split_length):
         else:
             file_name = task
             match = re.search(regex, file_name)
-            i,j   = match.group(1), match.group(2)
-            i,j   = int(i)        , int(j)
-            print('block2hdf:output for progress ' + str(i)+','+str(j) + ':'+str(q_files.qsize()))
+            i,j = -1,-1
+            try:
+                i,j   = match.group(1), match.group(2)
+                i,j   = int(i)        , int(j)
+                print('block2hdf:output for progress ' + str(i)+','+str(j) + ':'+str(q_files.qsize()))
+            except:
+                continue
 
         co_occurence = load_co_occurence(input_folder,i,j)
         co_occurence = co_occurence.toarray()
