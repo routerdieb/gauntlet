@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
     vocab.load(sys.argv[1])
     vocab2.load(sys.argv[2])
-    dir_list = os.listdir(path)
+
 
     splitted_dirs = []
     for process in range(num_processes):
