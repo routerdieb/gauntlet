@@ -1,3 +1,11 @@
 Beware of Server restarts, especially when using a network drive.
 
 The time of running these python scripts, can be quite high, so plan your time if you have weekly server restarts.
+
+If running out of Memory, try a system with more resources.
+Or set 
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+so that the code runs in CPU mode.
+Or choose the second gpu by using os.environ["CUDA_VISIBLE_DEVICES"] = "1".
+
+You can also set the env variable from the cmd-line.
