@@ -26,17 +26,18 @@ def load_dict(path,zeilen,spalten):
     co_occurences = {}
     
     
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
-        for line in lines:
-            match = re.match('\(([0-9]{1,}), ([0-9]{1,})\):([0-9.]{1,})',line)
-            x = int(match.group(1))
-            y = int(match.group(2))
-            count = float(match.group(3))
-            if (x,y) in co_occurences:
-                co_occurences[(x,y)] += count
-            else:
-                co_occurences[(x,y)] = count
+    if os.path.isfile(file_path):#in case of asymetrical embeddings, not all are there
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+            for line in lines:
+                match = re.match('\(([0-9]{1,}), ([0-9]{1,})\):([0-9.]{1,})',line)
+                x = int(match.group(1))
+                y = int(match.group(2))
+                count = float(match.group(3))
+                if (x,y) in co_occurences:
+                    co_occurences[(x,y)] += count
+                else:
+                    co_occurences[(x,y)] = count
     
     return co_occurences
 
@@ -88,7 +89,7 @@ def process_block(q_files,input_folder,output_folder,size,split_length):
 if __name__ == '__main__':
     if (len(sys.argv) < 3):
         raise ValueError(messageParameters)
-    print('starting dict2HDF')
+    print('starting block2HDF')
     input_folder = sys.argv[1]
     output_folder = sys.argv[2]
     num_processes = 4
