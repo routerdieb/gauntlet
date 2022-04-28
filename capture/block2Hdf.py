@@ -126,8 +126,7 @@ if __name__ == '__main__':
             p.start()
             process_list.append(p)
             print('started #' + str(process_id))
-    
-    print('last phase')
+
     for process in process_list:
         process.join()
     print('done')
