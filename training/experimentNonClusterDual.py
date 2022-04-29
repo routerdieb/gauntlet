@@ -56,19 +56,19 @@ def save_w_emb(output_path,vocab,epochs,experiment_name):
 
 
 
-parameterMessage = 'Please provide vocab,vocab2,hdf-path,output-path and experiment name and epochs (or epoch1,epoch2,..) --lr x.y --dims AAA'
+parameterMessage = 'Please provide base-vocab,vocab2,hdf-path,output-path and experiment name and epochs (or epoch1,epoch2,..) --lr x.y --dims AAA'
 if __name__ == '__main__':
     print('starting')
     if len(sys.argv) < 1+5:
         raise ValueError(parameterMessage)
 
-    vocab = TaggedVocab()
-    vocab.load(sys.argv[1])
-    size = vocab.get_size()
+    base_vocab = TaggedVocab()
+    base_vocab.load(sys.argv[1])
+    base_size = base_vocab.get_size()
 
-    vocab = TaggedVocab()
-    vocab.load(sys.argv[2])
-    size = vocab.get_size()
+    vocab2 = TaggedVocab()
+    vocab2.load(sys.argv[2])
+    size2 = vocab2.get_size()
 
 
     path_in = sys.argv[3]
@@ -93,14 +93,13 @@ if __name__ == '__main__':
             raise ValueError(parameterMessage)
 
     tf.keras.backend.clear_session()
-    trainer = Dual_ModelTrainer(size,path_in,vector_size=dim,lr=lr)
+    trainer = Dual_ModelTrainer(base_size,size2,path_in,vector_size=dim,lr=lr)
     trainer.prepare(path_out,experiment_name+'_'+str(epochs)+"_epochs")
 
     startTime = time.time()
     for next_training_steps,overall_epochs in zip(epochs,epochs_og):
         trainer.train_splitted(next_training_steps)
-        save_wc_emb(path_out,vocab,overall_epochs,experiment_name)
-        save_w_emb(path_out,vocab,overall_epochs,experiment_name)
+        save_w_emb(path_out,base_vocab,overall_epochs,experiment_name)
 
     executionTime = (time.time() - startTime)
     print('Final Execution time in seconds: ' + str(executionTime))
