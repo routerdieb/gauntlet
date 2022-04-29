@@ -22,7 +22,7 @@ class Dual_ModelTrainer:
         self.block_length  = 5000
         self.amount_split  = math.ceil(vocab_length/float(self.block_length))
         self.amount_split2  = math.ceil(vocab2_length/float(self.block_length))
-        print('amout_split: ' + str(self.amount_split))
+        print('amout_split: ' + str(self.amount_split) + ":" +str(self.amount_split2))
         self.block_path    = block_path
         self.vocab_length  = vocab_length
         self.vocab2_length = vocab2_length
@@ -114,10 +114,7 @@ class Dual_ModelTrainer:
     
     def block_file_path(self,zeile,spalte):
         # load the hdf coocurence block
-        if(zeile >= spalte):
-            template = "tf_cooccurence_{i}_{j}.hdf".format(i=zeile,j=spalte)
-        else:
-            template = "tf_cooccurence_{i}_{j}.hdf".format(i=spalte,j=zeile)
+        template = "tf_cooccurence_{i}_{j}.hdf".format(i=zeile,j=spalte)
         
         return  os.path.join(self.block_path ,template)
         
@@ -132,8 +129,6 @@ class Dual_ModelTrainer:
         
         tmp_hf = h5py.File(file_path, "r")
         coocurrence = tmp_hf.get("co-ocurrence")[:]
-        if (spalte > zeile):
-            coocurrence = np.transpose(coocurrence)
         self.tf_co_occurences = tf.convert_to_tensor(coocurrence,dtype=tf.dtypes.float32)
         coocurrence = None
         tmp_hf.close()
@@ -154,8 +149,6 @@ class Dual_ModelTrainer:
         
         tmp_hf = h5py.File(file_path, "r")
         coocurrence = tmp_hf.get("co-ocurrence")[:]
-        if (spalte > zeile):
-            coocurrence = np.transpose(coocurrence)
         tf_co_occurences = tf.convert_to_tensor(coocurrence,dtype=tf.dtypes.float32)
         coocurrence = None
         tmp_hf.close()
