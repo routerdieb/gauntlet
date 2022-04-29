@@ -13,8 +13,7 @@ import time
 import csv
 from csv_writer import *
 import random
-
-from Base_ModelTrainer2 import *
+from Dual_ModelTrainer import *
 
 def save_wc_emb(output_path,vocab,epochs,experiment_name):
     w, c = [None] * len(trainer.tf_weights), [None] * len(trainer.tf_con_weights)
