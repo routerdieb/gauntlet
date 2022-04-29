@@ -181,7 +181,7 @@ class Dual_ModelTrainer:
                 self.load_block_async(next[0],next[1])
 
     def loss(self,zeile,spalte,weights,context_weights,bias,con_bias,co_occurences):
-    
+        print(zeile,spalte)
         #just the words context
         if(zeile == self.amount_split - 1):
             difference = self.block_length - con_bias.shape[0]
