@@ -8,7 +8,7 @@ ADJ#opposite 2
 ADJ#comparative 3
 ADJ#superlative 4
 VERB#present participle 5
-NOUN=>VERB#nationality-adjective 6
+NOUN=>ADJ#nationality-adjective 6
 VERB#past tense 7
 NOUN#plural 8
 NOUN=>VERB#plural 9

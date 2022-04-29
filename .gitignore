@@ -4,3 +4,5 @@ vocabs/
 embeddings/
 .ipynb_checkpoints
 __pychache__
+.pyc
+*.pyc
