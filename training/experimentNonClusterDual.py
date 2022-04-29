@@ -62,11 +62,11 @@ if __name__ == '__main__':
     if len(sys.argv) < 1+5:
         raise ValueError(parameterMessage)
 
-    base_vocab = TaggedVocab()
+    base_vocab = TaggedVocabulary()
     base_vocab.load(sys.argv[1])
     base_size = base_vocab.get_size()
 
-    vocab2 = TaggedVocab()
+    vocab2 = TaggedVocabulary()
     vocab2.load(sys.argv[2])
     size2 = vocab2.get_size()
 
