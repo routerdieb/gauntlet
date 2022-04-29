@@ -114,7 +114,7 @@ class Dual_ModelTrainer:
     
     def block_file_path(self,zeile,spalte):
         # load the hdf coocurence block
-        template = "tf_cooccurence_{i}_{j}.hdf".format(i=zeile,j=spalte)
+        template = "tf_cooccurence_{i}_{j}.hdf".format(i=spalte,j=zeile)
         
         return  os.path.join(self.block_path ,template)
         
@@ -129,6 +129,7 @@ class Dual_ModelTrainer:
         
         tmp_hf = h5py.File(file_path, "r")
         coocurrence = tmp_hf.get("co-ocurrence")[:]
+        coocurrence = np.transpose(coocurrence)
         self.tf_co_occurences = tf.convert_to_tensor(coocurrence,dtype=tf.dtypes.float32)
         coocurrence = None
         tmp_hf.close()
@@ -149,6 +150,7 @@ class Dual_ModelTrainer:
         
         tmp_hf = h5py.File(file_path, "r")
         coocurrence = tmp_hf.get("co-ocurrence")[:]
+        coocurrence = np.transpose(coocurrence)
         tf_co_occurences = tf.convert_to_tensor(coocurrence,dtype=tf.dtypes.float32)
         coocurrence = None
         tmp_hf.close()
