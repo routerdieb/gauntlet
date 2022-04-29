@@ -183,7 +183,7 @@ class Dual_ModelTrainer:
     def loss(self,zeile,spalte,weights,context_weights,bias,con_bias,co_occurences):
         print(zeile,spalte)
         #just the words context
-        if(zeile == self.amount_split - 1):
+        if(zeile == self.amount_split2 - 1):
             difference = self.block_length - con_bias.shape[0]
             add2_context_bias   = tf.zeros((difference,1),dtype=tf.dtypes.float32)
             add2_context_weights = tf.zeros((difference,self.vector_size),dtype=tf.dtypes.float32)
