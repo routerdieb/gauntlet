@@ -31,15 +31,11 @@ class Co_Occurence_DualCapturer:
         word_ids = []
         context_ids = []
         for token in article_tokens:
-            print(token)
             cur_word_ids = word_vocab.get_ids_text(token)
             word_ids.append(cur_word_ids)
             cur_context_ids = context_vocab.get_ids_text(token)
             context_ids.append(cur_context_ids)
 
-        print(str(cur_context_ids)[0:1000])
-        print(str(word_ids)[0:1000])
-        sleep(1000)
 
         for focus_position,focus_ids in enumerate(word_ids):
             window_left = context_ids[max(0,focus_position-window_size):focus_position]
@@ -54,7 +50,6 @@ class Co_Occurence_DualCapturer:
                 dist = abs(1+ position)
                 self._assign_entrys(focus_ids,ids,dist)
 
-        print(len(self.co_occurences))
         return self.co_occurences
     
     def save_coocurrences(self,file_name):
