@@ -232,7 +232,7 @@ class Dual_ModelTrainer:
             cur_loss = 0.0
             
             
-            block_list = [(x,y) for x in range(self.amount_split) for y in range(self.amount_split2)]
+            block_list = [(x,y) for x in range(self.amount_split2) for y in range(self.amount_split)]
             random.shuffle(block_list)
         
             enumerated = enumerate(block_list)
