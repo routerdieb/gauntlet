@@ -6,3 +6,6 @@ embeddings/
 __pychache__
 .pyc
 *.pyc
+.ipynb
+*.ipynb
+.ipynb_checkpoints
