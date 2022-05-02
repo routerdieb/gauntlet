@@ -79,10 +79,6 @@ if __name__ == '__main__':
         dir = dir_list[dir_index]
         splitted_dirs[dir_index % num_processes].append(dir)
     
-    #delete this later
-    for i in range(len(splitted_dirs)):
-        print(len(splitted_dirs[i]))
-
 
     process_list = []
     for process_id in range(num_processes):

@@ -63,7 +63,7 @@ def process_dir(path,directorys):
     
 if __name__ == '__main__':
     if len(sys.argv) != 4:
-        raise ValueError('Please provide preprocessed wikipath and out path and num processes')
+        raise ValueError('Please provide preprocessed wikipath and out path and number of processes')
     pathIn = sys.argv[1]
     pathOut = sys.argv[2]
     dir_list = os.listdir(pathIn)
