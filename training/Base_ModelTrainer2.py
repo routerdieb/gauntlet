@@ -163,9 +163,8 @@ class Base_ModelTrainer2:
         tf_co_occurences = None
         
    
-    def _inner_loss(self,weights,context_weights,bias_mat,con_bias_mat,co_occurences):
+    def _inner_loss(self,weights,context_weights,bias_terms,co_occurences):
         #co_occurences = tf.clip_by_value(co_occurences, clip_value_min = 0.0, clip_value_max=5000.0)
-        bias_terms = bias_mat + con_bias_mat
         weight_matrix = tf.matmul(context_weights,weights)
         log_X = tf.math.log(co_occurences + self.ones_symetrical)
         summe = bias_terms + weight_matrix - log_X
@@ -196,7 +195,6 @@ class Base_ModelTrainer2:
             con_bias   = tf.concat([con_bias,add2_context_bias],axis = 0)
         else:
             con_weights       = context_weights
-        con_bias_mat   = tf.broadcast_to(con_bias,(self.block_length,self.block_length))
         
         co_occurences = self.tf_co_occurences
         #just the words without context
@@ -209,9 +207,8 @@ class Base_ModelTrainer2:
             bias = tf.concat([bias,add2_bias],axis=1)
         else:
             weights     = weights
-        bias_mat = tf.broadcast_to(bias,(self.block_length,self.block_length))
-          
-        return self._inner_loss(weights,con_weights,bias_mat,con_bias_mat,co_occurences)
+        biasMat = tf.math.multiply(bias, con_bias)
+        return self._inner_loss(weights,con_weights,biasMat,co_occurences)
     
     alpha = tf.constant(0.75,dtype=tf.dtypes.float32)
     XMAX = tf.constant(100.0,dtype=tf.dtypes.float32)
