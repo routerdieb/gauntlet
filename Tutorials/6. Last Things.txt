@@ -1,0 +1,1 @@
+Use extract embedding jupyther book, to extract the embedding out of the asyn hdf file and outcomment the use of context_weight for reasons stated in the thesis.
