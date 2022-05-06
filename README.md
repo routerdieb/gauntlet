@@ -1,7 +1,8 @@
 # Gauntlet
 
-A Framework for modifing GloVe with PoS or NER tags.
+A Framework for processing tagged corpora with multivariant-capture for GloVe embeddings.
 These is done in varios ways, mainly through pre and post precessing of data for GloVe.
+The Feature-sets are  Ontonotes 5, Treebank PoS Tagset and Universal PoS Tagset.
 
 The name Gauntlet is inspired by the medival Gauntlet, which is put on top of GloVe.
 
